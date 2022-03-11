@@ -43,6 +43,173 @@ boxrule=0pt,arc=0pt,boxsep=2pt,left=2pt,right=2pt,leftrule=2pt}
 \maketitle
 \newpage
 
-\section{Characteristics of Probability Measures}
+\subsection{Examples of Probability Space}
+
+\subsubsection{Example with \(\Omega\) Finite}
+
+We discuss a particular type of probability spaces where the sample space \(\Omega\) is an arbitrary \textbf{finite} set, and all the outcomes have the \textbf{same} probability \(p_{\omega} = \frac{1}{|\Omega|}\).
+
+\textbf{Definition:} Let \(\Omega\) be a finite sample space. The \textbf{Laplace model} on \(\Omega\) is the triple \((\Omega, \, \mathcal{F}, \, \mathbb{P})\), where:
+
+\begin{itemize}
+    \item \(\mathcal{F} = \mathcal{P}(\Omega)\),
+    \item \(\mathbb{P} : \mathcal{F} \to [0, \, 1]\) is defined by
+\end{itemize}
+\[
+    \forall A \in \mathcal{F} \quad \mathbb{P}[A] = \frac{|A|}{|\Omega|}
+\]
+
+\begin{ebox}
+    \textbf{Example:} We consider \(n \geq 3\) points on a circle, from which we select \(2\) at random. What is the probability that these two points selected are neighbors? We consider the Laplace model one
+    \[
+        \Omega = \{E \subset \{1, \, 2,..., \, n\} : |E| = 2\}.
+    \]
+    The event "the two points of \(E\) are neighbors" is given by
+    \[
+        A = \{\{1, \, 2\}, \, \{2, \, 3\},..., \, \{n-1, \, n\}, \, \{n, \, 1\}\}
+    \]
+    and we have
+    \[
+        \mathbb{P}[A] = \frac{|A|}{|\Omega|} = \frac{n}{\binom{n}{2}} = \frac{2}{n - 1}.
+    \]
+\end{ebox}
+
+\subsubsection{Example with \(\Omega\) Infinite Countable}
+
+\textbf{Example:} We throw a biased coin multiple times, at each throw, the coin falls on head with probability \(p\), and it falls on tail with probability \(1 - p\) (\(p\) is a fixed parameter in \([0, \, 1]\)). We stop at the first time we see a tail. The probability that we stop exactly at time \(k\) is given by
+\[
+    p_k = p^{k-1}(1-p).
+\]
+
+For this experiment, one possible probability space is given by:
+
+\begin{itemize}
+    \item \(\Omega = \mathbb{N} \setminus \{0\} = \{1, \, 2, \, 3,...\}\)
+    \item \(\mathcal{F} = \mathcal{P}(\Omega)\)
+    \item for \(A \in \mathcal{F}, \, \mathbb{P}[A] = \sum_{k \in A}p_k\)
+\end{itemize}
+
+\subsection{Properties of Events}
+
+\subsubsection{Operations on Events and Interpretation}
+
+The following propositions asserts that the different well-known set operations are allowed.
+
+\begin{tbox}
+    \textbf{Proposition (Consequences of the definition):} Let \(\mathcal{F}\) be a sigma-algebra on \(\Omega\). We have:
+
+    \begin{itemize}
+        \item \textbf{P4.} \(\emptyset \in \mathcal{F}\)
+        \item \textbf{P5.} \(A_1, \, A_2,... \in \mathcal{F} \implies \bigcap_{i = 1}^{\infty} A_i \in \mathcal{F}\)
+        \item \textbf{P6.} \(A, \, B \in \mathcal{F} \implies A \cup B \in \mathcal{F}\)
+        \item \textbf{P7.} \(A, \, B \in \mathcal{F} \implies A \cap B \in \mathcal{F}\)
+    \end{itemize}
+\end{tbox}
+
+A short summary of the common set-operations is given below:
+
+\begin{itemize}
+    \item \(A^C :\) \(A\) does not occur.
+    \item \(A \cap B :\) \(A\) and \(B\) occur.
+    \item \(A \cup B :\) \(A\) or \(B\) occurs
+    \item \(A \Delta B :\) one and only one of \(A\) or \(B\) occurs
+    \item \(A \subset B :\) If \(A\) occurs, then \(B\) occurs
+    \item \(A \cap B = \emptyset :\) \(A\) and \(B\) cannot occur at the same time
+    \item \(\Omega = A_1 \cup A_2 \cup A_3\) with \(A_1, \, A_2, \, A_3\) pairwise disjoint: for each outcome \(\omega\), one and only one of the events \(A_1, \, A_2, \, A_3\) is satisfied.
+\end{itemize}
+
+\subsection{Properties of Probability Measures}
+
+\subsubsection{Direct Consequences of the Definition}
+
+\begin{tbox}
+    \textbf{Proposition:} Let \(\mathbb{P}\) be an arbitrary measure on \((\Omega, \, \mathcal{F})\). We have:
+
+    \begin{itemize}
+        \item \textbf{P3.} \(\mathbb{P}[\emptyset] = 0\).
+        \item \textbf{P4. (additivity)} Let \(k \geq 1\). let \(A_1,..., \, A_k\) be \(k\) pairwise disjoint events, then \(\mathbb{P}[A_1 \cup \cdots \cup A_k] = \mathbb{P}[A_1] + \cdots + \mathbb{P}[A_k]\).
+        \item \textbf{P5.} Let \(A\) be an event, then \(\mathbb{P}[A^C] = 1 - \mathbb{P}[A]\).
+        \item \textbf{P6.} If \(A\) and \(B\) are two events (not necessarily disjoin), then \(\mathbb{P}[A \cup B] = \mathbb{P}[A] + \mathbb{P}[B] - \mathbb{P}[A \cap B]\).
+    \end{itemize}
+\end{tbox}
+
+\subsubsection{Useful Inequalities}
+
+\textbf{Proposition (Monotonicity):} Let \(A, \, B \in \mathcal{F}\), then
+\[
+    A \subset B \implies \mathbb{P}[A] \leq \mathbb{P}[B].
+\]
+
+\textbf{Proposition (Union bound):} Let \(A_1, \, A_2,...\) be a sequence of events (not necessarily disjoint), then we have
+\[
+    \mathbb{P}[\bigcup_{i = 1}^{\infty} A_i] \leq \sum_{i = 1}^{\infty} \mathbb{P}[A_i].
+\]
+
+\textbf{Remark:} The union bound also applies to a \textit{finite} collection of events.
+
+\subsubsection{Continuity Properties of Probability Measures}
+
+\begin{tbox}
+    \textbf{Proposition:} Let \((A_n)\) be an increasing sequence of events (i.e. \(A_n \subset A_{n + 1}\) for every \(n\)). then
+    \[
+        \lim_{n \to \infty} P[A_n] = \mathbb{P}[\bigcup_{n = 1}^{\infty}A_n]. \quad \text{(increasing limit)}
+    \]
+    Let \((B_n)\) be a decreasing sequence of events (i.e. \(B_n \supset B_{n + 1}\) for every \(n\)). Then
+    \[
+        \lim_{n \to \infty} P[B_n] = \mathbb{P}[\bigcap_{n = 1}^{\infty} B_n]. \quad \text{(decreasing limit)}
+    \]
+\end{tbox}
+
+\textbf{Remark:} By monotonicity, we have \(\mathbb{P}[A_n] \leq \mathbb{P}[A_{n + 1}]\) and \(\mathbb{P}[B_n] \geq \mathbb{P}[B_{n + 1}]\) for every \(n\). Hence the limits in the proposition are well defined as monotone limits.
+
+\subsection{Conditional Probabilities}
+
+\textbf{Definition (Conditional probability):} Let \((\Omega, \, \mathcal{F}, \, \mathbb{P})\) be some probability space. Let \(A, \, B\) be two events with \(\mathbb{P}[B] > 0\). The \textbf{conditional probability of} \(A\) \textbf{given} \(B\) is defined by
+\[
+    \mathbb{P}[A \, | \, B] = \frac{\mathbb{P}[A \cap B]}{\mathbb{P}[B]}.
+\]
+
+\textbf{Remark:} \(\mathbb{P}[B \, | \, B] = 1\).
+
+\textbf{Proposition:} Let \(\Omega, \, \mathcal{F}, \, \mathbb{P}\) be some probability space. Let \(B\) be an event with positive probability. Then \(\mathbb{P}[ \,. \, | \, B]\) is a probability measure on \(\Omega\).
+
+\begin{tbox}
+    \textbf{Proposition (Formula of total probability):} Let \(B_1,..., \, B_n\) be a partition of the sample space \(\Omega\) with \(\mathbb{P}[B_i] > 0\) for every \(1 \leq i \leq n\). Then, one has
+    \[
+        \forall A \in \mathcal{F} : \mathbb{P}[A] = \sum_{i = 1}^n \mathbb{P}[A \, | \, B_i] \mathbb{P}[B_i].
+    \]
+    Here, a \textit{partition} \(B_i\) is such that \(\Omega = B_1 \cup \cdots \cup B_n\) and the events are pariwise disjoint.
+\end{tbox}
+
+\begin{tbox}
+    \textbf{Proposition (Bayes formula):} Let \(B_1,..., \, B_n \in \mathcal{F}\) be a partition of \(\Omega\) with \(\mathbb{P}[B_i] > 0\) for every \(i\). For every event \(A\) with \(\mathbb{P}[A] > 0\), we have
+    \[
+        \forall i = 1,..., \, n : \mathbb{P}[B_i \, | \, A] = \frac{\mathbb{P}[A \, | \, B_i] \cdot \mathbb{P}[B_i]}{\sum_{j = 1}^n \mathbb{P}[A \, | \, B_j] \cdot \mathbb{P}[B_j]}.
+    \]
+\end{tbox}
+
+\subsection{Independence}
+
+\subsubsection{Independence of Events}
+
+\textbf{Definition (Independence of two events):} Let \((\Omega, \, \mathcal{F}, \, \mathbb{P})\) be a probability space. Two events \(A\) and \(B\) are said to be \textbf{independent} If
+\[
+    \mathbb{P}[A \cap B] = \mathbb{P}[A] \cdot \mathbb{P}[B].
+\]
+
+\textbf{Remark:} If \(\mathbb{P}[A] \in \{0, \, 1\}\), then \(A\) is independent of every event, i.e. \(\forall B \in \mathcal{F} : \mathbb{P}[A \cap B] = \mathbb{P}[A] \cdot \mathbb{P}[B]\). Furthermore we might also state, that \(A\) is independent of \(B\) if and only if \(A\) is independent of \(B^C\).
+
+\textbf{Proposition:} Let \(A, \, B \in \mathcal{F}\) be two events with \(\mathbb{P}[A], \, \mathbb{P}[B] > 0\). Then the following are equivalent:
+
+\begin{itemize}
+    \item \(\mathbb{P}[A \cap B] = \mathbb{P}[A] \cdot \mathbb{P}[B]\) (\(A\) and \(B\) are independent)
+    \item \(\mathbb{P}[A \, | \, B] = \mathbb{P}[A]\) (the occurrence of \(B\) has no influence on \(A\))
+    \item \(\mathbb{P}[B \, | \, A] = \mathbb{P}[B]\) (the occurrence of \(A\) has no influence on \(B\))
+\end{itemize}
+
+\textbf{Definition:} Let \(I\) be an arbitrary set of indices. A collection of events \((A_i)_{i \in I}\) is said to be \textbf{independent} if
+\[
+    \forall J \subset I \text{ infinite} : \mathbb{P}[\bigcap_{j \in J} A_j] = \prod_{j \in J} \mathbb{P}[A_j].
+\]
 
 \end{document}

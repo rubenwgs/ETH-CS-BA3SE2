@@ -128,7 +128,7 @@ The set \(\Omega\) is called the \textbf{sample space.} An element \(\omega \in 
     \]
 \end{ebox}
 
-\subsection{Events}
+\subsubsection{Events}
 
 Previously, the set of \textbf{events} was always \(\mathcal{P}(\Omega)\). In this class, we will work with more general sets of events \(\mathcal{F} \subset \mathcal{P}(\Omega)\), called sigma algebras.
 
@@ -150,5 +150,25 @@ Previously, the set of \textbf{events} was always \(\mathcal{P}(\Omega)\). In th
         \item \(\mathcal{F} = \{\emptyset, \, \{1, \, 2, \, 3\}, \, \{4, \, 5, \, 6\}, \, \{1\}, \, \{2, \, 3, \, 4, \, 5, \, 6\}, \, \Omega\}\) is not a sigma-algebra because \(P3\) is not satisfied.
     \end{itemize}
 \end{ebox}
+
+\subsubsection{Probability Measure}
+
+\textbf{Definition:} Let \(\Omega\) be a sample space, let \(\mathcal{F}\) be a sigma-algebra. A \textbf{probability measure} on \((\Omega, \, \mathcal{F})\) is a map
+
+\begin{align*}
+    \mathbb{P} : &\mathcal{F} \to [0, \, 1] \\
+    &A \to \mathbb{P}[A]
+\end{align*}
+
+that satisfies the following two properties:
+
+\begin{itemize}
+    \item \textbf{P1.} \(\mathbb{P}[\Omega] = 1\).
+    \item \textbf{P2. (countable additivity)} \(\mathbb{P}[A] = \sum_{i = 1}^{\infty} \mathbb{P}[A_i]\) if \(A = \bigcup_{i = 1}^{\infty} A_i\) (\textit{disjoint union}).
+\end{itemize}
+
+\subsubsection{Notion of Probability Space}
+
+\textbf{Definition:} Let \(\Omega\) be a sample space, \(\mathcal{F}\) a sigma-algebra, and \(\mathbb{P}\) a probability measure. The triple \((\Omega, \, \mathcal{F}, \, \mathbb{P})\) is called a \textbf{probability space.}
 
 \end{document}
