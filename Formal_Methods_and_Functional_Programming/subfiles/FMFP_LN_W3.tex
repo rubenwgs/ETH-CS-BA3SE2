@@ -1,0 +1,146 @@
+\documentclass[a4paper]{extarticle}
+\usepackage[utf8]{inputenc}
+\usepackage[a4paper, margin=1in]{geometry}
+
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{enumitem}
+\usepackage{tcolorbox}
+\usepackage{fancyhdr}
+\usepackage{graphicx}
+\usepackage{float}
+
+\setlength{\parindent}{0em}
+\setlength{\parskip}{0.4em}
+
+\definecolor{theoremblue}{RGB}{1, 73, 124}
+\definecolor{corollaryblue}{RGB}{70, 143, 175}
+\definecolor{exampleblue}{RGB}{137, 194, 217}
+
+\newtcolorbox{tbox}{colback=theoremblue!20,colframe=theoremblue,
+boxrule=0pt,arc=0pt,boxsep=2pt,left=2pt,right=2pt,leftrule=2pt}
+
+\newtcolorbox{cbox}{colback=corollaryblue!20,colframe=corollaryblue,
+boxrule=0pt,arc=0pt,boxsep=2pt,left=2pt,right=2pt,leftrule=2pt}
+
+\newtcolorbox{ebox}{colback=exampleblue!20,colframe=exampleblue,
+boxrule=0pt,arc=0pt,boxsep=2pt,left=2pt,right=2pt,leftrule=2pt}
+
+\title{FMFP - Lecture Notes Week 3}
+\author{Ruben Schenk, ruben.schenk@inf.ethz.ch}
+\date{\today}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{ruben.schenk@inf.ethz.ch}
+\rfoot{Page \thepage}
+\lhead{FMFP - Lecture Notes Week 3}
+
+\begin{document}
+
+\maketitle
+\newpage
+
+\subsubsection{Patterns}
+
+\textbf{Pattern matching} has two main purposes:
+
+\begin{itemize}
+    \item checks if an argument has the proper form
+    \item binds values to variables
+\end{itemize}
+
+\begin{ebox}
+    \textbf{Example:} \verb|(x : xs)| matches with \verb|[2, 3, 4]| and binds:
+    \begin{verbatim}
+        x  = 2
+        xs = [3, 4]
+    \end{verbatim}
+\end{ebox}
+
+Patterns are \textit{inductively} defined:
+
+\begin{itemize}
+    \item Constants: \verb|-2, '1', True, []|
+    \item Variables: \verb|x, foo|
+    \item Wild card: \verb|_|
+    \item Tuples: \verb|(p1, p2,..., pk)|, where \verb|p_i| are patterns
+    \item Non-empty list: \verb|(p1 : p2)|, where \verb|p_i| are patterns
+\end{itemize}
+
+Moreover, patterns require to be \textbf{linear}, this means that each variable can occur at most once.
+
+\subsubsection{Advice on Recursion}
+
+Defining a recursion is best done by obeying the following simple steps:
+
+\begin{itemize}
+    \item Step 1: Define the type of the function
+    \item Step 2: Enumerate all different cases
+    \item Step 3: Define the most simple cases
+    \item Step 4: Define the remaining cases
+    \item Step 5: Generalize and simplify
+\end{itemize}
+
+\begin{ebox}
+    \textbf{Example:} The following code snippet shows an example of how we implement \textit{insertion sort} recursively in Haskell:
+
+    \begin{verbatim}
+        isort :: [Int] -> Int
+        isort []       = []
+        isort (x : xs) = ins x (isort xs)
+
+        ins :: Int -> [Int] -> [Int]
+        ins a [] = [a]
+        ins a (x : xs)
+          | a >= x    = a : (x : xs)
+          | otherwise = x : ins a xs
+    \end{verbatim}
+\end{ebox}
+
+\begin{ebox}
+    \textbf{Example:} The following code snippet shows how we can implement \textit{quicksort} recursively in Haskell:
+
+    \begin{verbatim}
+        qsort [] = []
+        qsort (x : xs) =
+          qsort (lesseq x xs) ++ [x] ++ qsort (greater x xs)
+          where
+            lesseq _ [] = []
+            lesseq x (y : ys)
+              | (y <= x)  = y : lesseq x ys
+              | otheriwse =     lesseq x ys
+            greater _ [] = []
+            greater x (y : ys)
+              | (y > x)   = y : greater x ys
+              | otherwise =     greater x ys
+    \end{verbatim}
+\end{ebox}
+
+\subsubsection{List Comprehensions}
+
+\textbf{List comprehension} is a notation for sequential processing of list elements. It is analogous to set comprehension in set theory, i.e. \(\{2 \cdot x \, | \, x \in X\}\). In Haskell, this is equivalent to \([2 * x \, | \, x \leftarrow xs]\).
+
+List comprehensions are very powerful! The following code snippet, again, implements \textit{quicksort} as shown previously:
+
+\begin{verbatim}
+    q []       = []
+    q (p : xs) = q [x | x <- xs, x <= p] ++ [p] ++ q [x | x <- xs, x > p]
+\end{verbatim}
+
+\subsubsection{Induction over Lists}
+
+How are elements in \verb|[T]| constructed? \verb|[] :: [T]| and \verb|(y : ys) :: [T]| if \verb|y :: T| and \verb|ys :: [T]|. This corresponds to the following rule:
+
+\begin{itemize}
+    \item Proof by induction: to prove \(P\) for all \verb|xs| in \verb|[T]|
+    \item Base case: prove \(P[xs \to []]\)
+    \item Step case: prove \(\forall y :: T, \, ys :: [T].P[xs \to ys] \to P[xs \to y : ys]\), i.e.
+    \begin{itemize}
+        \item Fix arbitrary: \(y :: T\) and \(ys :: [T]\) (both not free in \(P\))
+        \item Induction hypothesis: \(P[xs \to ys]\)
+        \item To prove: \(P[xs \to y : ys]\)
+    \end{itemize}
+\end{itemize}
+
+\end{document}
