@@ -143,4 +143,129 @@ How are elements in \verb|[T]| constructed? \verb|[] :: [T]| and \verb|(y : ys) 
     \end{itemize}
 \end{itemize}
 
+\subsection{Abstractions}
+
+\subsubsection{Polymorhpic Types}
+
+If we consider the \verb|length| function, it should output the length of a list of \textit{any} type. We say that the type of the function is \textbf{polymorphic,} i.e. \verb|[t] -> Int| for all types \(t\).
+
+This is often called \textbf{parametric polymorphism,} which is different from \textit{subtyping polymorphism,} where methods can be applied to objects of sub-classes only.
+
+\textbf{Definition:} A type \(w\) for \(f\) is a \textbf{most general} (also called \textbf{principal}) type iff. for all types \(s\) for \(f\), \(s\) is an instance of \(w\).
+
+It is important to note that type variables in Haskell start with a \textit{lower-case letter!}
+
+\begin{ebox}
+    \textbf{Example:} Consider the following polymorphic types:
+    \begin{verbatim}
+        :type (++)
+        (++) :: [a] -> [a] -> [a]
+
+        :type zip
+        zip :: [a] -> [b] -> [(a, b)]
+
+        :type []
+        [] :: [a]
+    \end{verbatim}
+\end{ebox}
+
+\subsubsection{Higher-order Functions}
+
+We can distinguish the order of functions in the following way:
+
+\begin{itemize}
+    \item First order: Arguments are base types or constructor types \begin{verbatim}
+        Int -> [Int]
+    \end{verbatim}
+    \item Second order: Arguments are themselves functions \begin{verbatim}
+        (Int -> Int) -> [Int]
+    \end{verbatim}
+    \item Third order: Arguments are functions, whose arguments are functions \begin{verbatim}
+        ((Int -> Int) -> Int) -> [Int]
+    \end{verbatim}
+    \item Higher-order functions: Functions of arbitrary order
+\end{itemize}
+
+\begin{ebox}
+    \textbf{Example:} Consider the \verb|map| function:
+    \begin{verbatim}
+        map :: (a -> b) -> [a] -> [b]
+        map f []       = []
+        map f (x : xs) = f x : map f xs
+
+        times2 x = 2 * x
+
+        double xs = map times2 xs
+    \end{verbatim}
+\end{ebox}
+
+\begin{ebox}
+    \textbf{Example:} Consider the \verb|foldr| function:
+    \begin{verbatim}
+        foldr :: (a -> b -> b) -> b -> [a] -> b
+        foldr f z []       = z
+        foldr f z (x : xs) = f x (foldr f z xs)
+
+        sumList xs = foldr (+) 0 xs
+    \end{verbatim}
+\end{ebox}
+
+\subsubsection{\(\lambda\)-Expressions}
+
+Consider the following two functions:
+\begin{verbatim}
+    times2 x = 2 * x
+    double xs = map times2 xs
+
+    atEnd x xs = xs ++ [x]
+    rev xs = foldr atEnd [] xs
+\end{verbatim}
+
+Haskell provides a notation to write functions like \verb|times2| and \verb|atEnd| in-line via so-called \textbf{\(\lambda\)-expressions:}
+\begin{verbatim}
+    ? map (\x -> 2 * x) [2, 3, 4]
+    [4, 6, 8]
+
+    ? foldr (\x xs -> xs ++ [x]) [] [1, 2, 3, 4]
+    [4, 3, 2, 1]
+\end{verbatim}
+
+This is also called \textit{Church's \(\lambda\)-notation,} i.e. replacing \(\lambda\) by the character \verb|'\'|.
+
+\subsubsection{Functions as Values}
+
+In Haskell, functions can be returned as values! Consider the following simple example where we return the two-times-application of some function \(f\):
+\begin{verbatim}
+    (.) :: (b -> c) -> (a -> b) -> (a -> c)
+    (f . g) x = f (g x)
+
+    twice :: (t -> t) -> (t -> t)
+    twice f = f . f
+
+    ? twice times2 3
+    12 :: Int
+\end{verbatim}
+
+\subsubsection{Differece Lists}
+
+\textbf{Difference lists} are functions \verb|[a] -> [a]| that prepend a list to its argument.
+\begin{verbatim}
+    type DList a = [a] -> [a]
+
+    empty :: DList a
+    empty = \xs -> xs                      -- empty list
+
+    sngl :: a -> DList a
+    sngl x = \xs -> x : xs                 -- singleton list
+
+    app :: DList a -> DList a -> DList a
+    ys 'app' zs = \xs -> ys (zs xs)        -- concatenation
+
+    fromList :: [a] -> DList a
+    fromList ys = \xs -> ys ++ xs          -- conversion from lists
+
+    toList :: DList a -> [a]
+    toList ys = ys []                      -- conversion to lists
+\end{verbatim}
+
 \end{document}
