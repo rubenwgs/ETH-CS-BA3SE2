@@ -1,0 +1,110 @@
+\documentclass[a4paper]{extarticle}
+\usepackage[utf8]{inputenc}
+\usepackage[a4paper, margin=1in]{geometry}
+
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{enumitem}
+\usepackage{tcolorbox}
+\usepackage{fancyhdr}
+\usepackage{graphicx}
+\usepackage{float}
+
+\setlength{\parindent}{0em}
+\setlength{\parskip}{0.4em}
+
+\definecolor{theoremblue}{RGB}{1, 73, 124}
+\definecolor{corollaryblue}{RGB}{70, 143, 175}
+\definecolor{exampleblue}{RGB}{137, 194, 217}
+
+\newtcolorbox{tbox}{colback=theoremblue!20,colframe=theoremblue,
+boxrule=0pt,arc=0pt,boxsep=2pt,left=2pt,right=2pt,leftrule=2pt}
+
+\newtcolorbox{cbox}{colback=corollaryblue!20,colframe=corollaryblue,
+boxrule=0pt,arc=0pt,boxsep=2pt,left=2pt,right=2pt,leftrule=2pt}
+
+\newtcolorbox{ebox}{colback=exampleblue!20,colframe=exampleblue,
+boxrule=0pt,arc=0pt,boxsep=2pt,left=2pt,right=2pt,leftrule=2pt}
+
+\title{IntroML - Lecture Notes Week 2.5}
+\author{Ruben Schenk, ruben.schenk@inf.ethz.ch}
+\date{\today}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{ruben.schenk@inf.ethz.ch}
+\rfoot{Page \thepage}
+\lhead{IntroML - Lecture Notes Week 2.5}
+
+\begin{document}
+
+\maketitle
+\newpage
+
+\section{Math Recap}
+
+\subsection{Derivatives}
+
+\paragraph{\(f(x) = Ax\):} Let \(f : \mathbb{R}^n \to \mathbb{R}^m\) be defined as \(f(x) = Ax\) for some matrix \(A \in \mathbb{R}^{m \times m}\). As \(f\) itself is linear, the derivative at any point such as \(x_0\) coincides with \(f\) itself:
+
+\[
+    Df(x_0) = A
+\]
+
+\paragraph{\(f(x) = w^Tx\):} Let \(f : \mathbb{R}^n \to \mathbb{R}\) be defined as \(f(x) = w^Tx\). Similar to the previous case, \(f\) is linear, hence its derivative is itself:
+
+\[
+    Df(x_0) = w^T
+\]
+
+\textit{Note:} The vector \(w\) is called the \textbf{gradient} of \(f\) at \(x_0\).
+
+\paragraph{\(g(x) = x^TAx\):} Let \(g : \mathbb{R}^n \to \mathbb{R}\) be defined as \(g(x) = x^TAx\). The goal is to compute the gradient of \(g\) at \(x\). Observe that
+
+\[
+    g(x) = \sum_{i,j = 1}^n a_{ij}x_ix_j.
+\]
+
+The derivative of \(g\) is going to be a \(1 \times n\) matrix with elements beingequal to the partial derivatives of \(g\):
+
+\[
+    Dg(x) = \lbrack \frac{\partial g}{\partial x_1} \cdots \frac{\partial g}{\partial x_n} \rbrack
+\]
+
+By computing we get:
+
+\[
+    \frac{\partial g}{\partial x_i} = \sum_{j = 1}^n a_{ij}x_j + \sum_{j = 1}^n a_{ji}x_j
+\]
+
+Packing the partial derivatives gives:
+
+\[
+    Dg(x) = ((A + A^T)x)^T, \quad \nabla g(x) = (A + A^T)x
+\]
+
+Specifically, if \(A\) is \textit{symmetric}, we have \(\nabla g(x) = 2Ax\).
+
+\subsection{Probability}
+
+\begin{cbox}
+    \textbf{Lemma:} Let \(X, \, Y\) be random variables, and \(f, \, g : \mathbb{R} \to \mathbb{R}\) two functions. Then:
+    \[
+        \mathbb{E}[f(X)g(y) \, | \, X] = f(X) \mathbb{E}[g(Y) \, | \, X].
+    \]
+\end{cbox}
+
+\begin{cbox}
+    \textbf{Lemma:} Let \(X, \, Y\) be two random variables. Then:
+    \[
+        \mathbb{E}[Y] = \mathbb{E}[\mathbb{E}[Y \, | \, X]].
+    \]
+\end{cbox}
+
+The two lemmas can be used to show that:
+
+\[
+    \text{Var} (Y) = \mathbb{E}[\text{Var} (X \, | \, Y)] + \text{Var} (\mathbb{E}[Y \, | \, X]).
+\]
+
+\end{document}
