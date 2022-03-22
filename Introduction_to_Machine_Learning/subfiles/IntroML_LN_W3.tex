@@ -256,4 +256,135 @@ In summary:
     \item Overfitting models predict: training data very well, test data not well
 \end{itemize}
 
+\section{Bias-Variance Tradeoff \& Regularization}
+
+\subsection{Bias-Variance Decomposition}
+
+\subsubsection{Bias}
+
+The \textbf{bias} of some method \(M\) is the distance of the average model \(\bar{f} = \frac{1}{K} \sum_{k = 1}^K \hat{f}_k\) to the ground truth \(\mathbb{E}_x (f^*(x) - \bar{f}(x))^2\).
+
+\begin{figure}[H]
+    \includegraphics[width=15cm]{../images/IntroML_Fig3-17}
+    \centering
+\end{figure}
+
+It is important to note that complex functions can model the ground truth well on average, as shown by the following figure:
+
+\begin{figure}[H]
+    \includegraphics[width=15cm]{../images/IntroML_Fig3-18}
+    \centering
+\end{figure}
+
+\subsubsection{Variance}
+
+The \textbf{variance} of some method \(M\) is the average distance of individual models to the average model, i.e. \(\mathbb{E}_x \frac{1}{K}\sum_{k = 1}^K (\hat{f}_k(x) - \bar{f}(x))^2\). For complex models, the varaince is large, whereas it is small for simple models:
+
+\begin{figure}[H]
+    \includegraphics[width=15cm]{../images/IntroML_Fig3-19}
+    \centering
+\end{figure}
+
+\begin{figure}[H]
+    \includegraphics[width=15cm]{../images/IntroML_Fig3-20}
+    \centering
+\end{figure}
+
+\subsubsection{Conclusion}
+
+In summary:
+
+\begin{itemize}
+    \item Bias = "average - ground truth"
+    \begin{itemize}
+        \item Drives Underfitting
+        \item Arises even for noiseless data
+    \end{itemize}
+    \item Variance = "individual - average"
+    \begin{itemize}
+        \item Drives overfitting
+        \item Especially for complex models
+    \end{itemize}
+\end{itemize}
+
+\subsection{Regularization}
+
+\subsubsection{Different Methods}
+
+Given a setting with linear regression with \(1d\) polynomial features \(\phi(x) = (1, \, x, \, x^2,..., \, x^m)\). We observe that complex models use too many features! But how can we force it to use fewer?
+
+Ideally we have that \(\arg \min_{w \in \mathbb{R}^d} ||y - \Phi w||^2\) is such that \(||w||_0 \leq k\). I.e. we need to search for the best subset of size \(k\), however this is combinatorial infeasible for large \(d\).
+
+The option we choose is to only use a few of these features and encourage sparsity via limiting the \(l_1\)-norm through \textbf{lasso regression:}
+
+\[
+    \arg \min_{w \in \mathbb{R}^d} ||y - \Phi w||^2 \quad s.t. \, ||w||_1 \leq R \Leftrightarrow \arg \min_{w \in \mathbb{R}^d} ||y - \Phi w||^2 + \lambda ||w||_1
+\]
+
+Another option would be to choose models with limited \(l_2\)-norm through \textbf{ridge regression:}
+
+\[
+    \arg \min_{w \in \mathbb{R}^d} ||y - \Phi w||^2 \quad s.t. \, ||w||_2 \leq R \Leftrightarrow \hat{w}_{\lambda} = \arg \min_{w \in \mathbb{R}^d} ||y - \Phi w||^2 + \lambda ||w||_2^2,
+\]
+
+where \(R\) is given and equivalent for some \(\lambda\). The \textit{closed-form solution} is simple by finding the stationary point: \(\hat{w}_{\lambda} = (X^TX + \lambda I)^{-1}X^Ty\)
+
+\subsubsection{Intuition Behind the Lasso}
+
+The first inuition can be given with small calculations. Take for example \(w_{sparse} = (1, \, 0, \, 0,..., \, 0)\) vs. some dense vector \(w_{dense} = \frac{1}{\sqrt{d}}(1, \, 1, \,..., \, 1)\). For the same \(l_2\) norm, the vectors with the smallest \(l_1\) norm are sparse
+
+\[
+    ||w_{dense}||_1 = \sqrt{d} >> ||w_{sparse}||_1 = 1,
+\]
+
+whereas vectors with the largest \(l_1\) norm are dense
+
+\[
+    ||w_{dense}||_1 = \sqrt{d} >> ||w_{dense}||_2 = 1.
+\]
+
+\begin{figure}[H]
+    \includegraphics[width=15cm]{../images/IntroML_Fig3-21}
+    \centering
+\end{figure}
+
+\subsubsection{Bias and Variance as Function of Regularization Strength}
+
+The variance shrinks and the bias increases with model complexity. The following figure shows varying model complexity reflected via sizes of ellipses for \(n > d\):
+
+\begin{figure}[H]
+    \includegraphics[width=15cm]{../images/IntroML_Fig3-22}
+    \centering
+\end{figure}
+
+We might also display the bias and variance as a function of \(\lambda\):
+
+\begin{figure}[H]
+    \includegraphics[width=15cm]{../images/IntroML_Fig3-23}
+    \centering
+\end{figure}
+
+\subsubsection{Cross-Validation to Determine Regulariztaion Strength}
+
+Instead of feature maps. the question now becomes how to optimally choose \(\lambda\).
+
+The regularized estimator \(\hat{f}^{\lambda} = \langle \hat{w}_{\lambda}; \cdot \rangle = M_{\lambda}(D)\) is the minimizer of the regularized training loss \(M_{\lambda}(D) = \arg \min_f L_0 (f; \, D) + \lambda ||f||\) with \(L_0 (f, \, D) = \frac{1}{|D|} \sum_{(x, \, y) \in D} l(f(x), \, y)\).
+
+The algorithm is the same as before:
+
+\begin{cbox}
+    \textbf{Algorithm:} Given a choice of features \(\lambda\), and \(K\) folds, do the following steps:
+    \begin{enumerate}
+        \item For all folds \(k = 1,..., \, K\)
+        \begin{enumerate}
+            \item Compute \(\hat{f}^{\lambda}_k = M_{\lambda}(D_k) = \arg \min_f L_0(f; \, D_k) + \lambda ||f||\)
+            \item Compute validation loss on fold \(k : R_{k}(\lambda) = \frac{1}{|D'_k|}\sum_{(x, \, y) \in D'_k}l(\hat{f}^{\lambda}_k)(x), \, y\)
+        \end{enumerate}
+        \item Compute cross-validation error \(CV_K(\lambda) = \frac{1}{K} \sum_{i = 1}^K R_k(\lambda)\)
+        \item Model selection: Pick \(\lambda\) with lowest error \(CV_k(\lambda)\)
+        \item Model training: Compute final model \(\hat{f} = \hat{f}^{\lambda} = M_{\lambda}(D_{rest})\)
+        \item Model evaluation: Estimate generalized error using \(D_{test}\)
+    \end{enumerate}
+\end{cbox}
+
 \end{document}
