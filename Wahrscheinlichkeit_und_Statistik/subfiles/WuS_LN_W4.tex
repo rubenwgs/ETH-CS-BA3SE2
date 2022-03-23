@@ -1,0 +1,250 @@
+\documentclass[a4paper]{extarticle}
+\usepackage[utf8]{inputenc}
+\usepackage[a4paper, margin=1in]{geometry}
+
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{enumitem}
+\usepackage{tcolorbox}
+\usepackage{fancyhdr}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{bbm}
+
+\setlength{\parindent}{0em}
+\setlength{\parskip}{0.4em}
+
+\definecolor{theoremblue}{RGB}{1, 73, 124}
+\definecolor{corollaryblue}{RGB}{70, 143, 175}
+\definecolor{exampleblue}{RGB}{137, 194, 217}
+
+\newtcolorbox{tbox}{colback=theoremblue!20,colframe=theoremblue,
+boxrule=0pt,arc=0pt,boxsep=2pt,left=2pt,right=2pt,leftrule=2pt}
+
+\newtcolorbox{cbox}{colback=corollaryblue!20,colframe=corollaryblue,
+boxrule=0pt,arc=0pt,boxsep=2pt,left=2pt,right=2pt,leftrule=2pt}
+
+\newtcolorbox{ebox}{colback=exampleblue!20,colframe=exampleblue,
+boxrule=0pt,arc=0pt,boxsep=2pt,left=2pt,right=2pt,leftrule=2pt}
+
+\title{WuS - Lecture Notes Week 4}
+\author{Ruben Schenk, ruben.schenk@inf.ethz.ch}
+\date{\today}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{ruben.schenk@inf.ethz.ch}
+\rfoot{Page \thepage}
+\lhead{WuS - Lecture Notes Week 4}
+
+\begin{document}
+
+\maketitle
+\newpage
+
+\section{Discrete and Continuous Random Variables}
+
+\subsection{Discontinuity \& Continuity Points of \(F\)}
+
+We have seen that the distribution function \(F = F_X\) of a random variable \(X\) is always \textit{rigt continuous.} What about left continuous?
+
+\begin{ebox}
+    \textbf{Example:} For a Bernoulli random variable \(X \sim \text{Ber}(p)\) with \(p < 1\), we have \(F_X(-h) = 0\) for every \(h > 0\), but \(F_X(0) = 1 - p \neq 0\). Therefore, \(F_X\) is not left continuous at \(0\), i.e.
+    \[
+        \lim_{h \downarrow 0} F_X(-h) = 0 \neq F_X(0).
+    \]
+\end{ebox}
+
+The following proposition gives an interpretation of the limit
+\[
+    F(a-) := \lim_{h \downarrow 0} F(a - h)
+\]
+at a given point \(a\) for a general distribution function.
+
+\begin{cbox}
+    \textbf{Proposition (probability of a given value):} Let \(X : \Omega \to \mathbb{R}\) be a random variable with distribution function \(F\). Then for every \(a\) in \(\mathbb{R}\) we have
+    \[
+        \mathbb{P}[X = a] = F(a) - F(a -).
+    \]
+\end{cbox}
+
+We give the following interpretation of the above introduce proposition. Fix some \(a \in \mathbb{R}\). Then:
+
+\begin{itemize}
+    \item If \(F\) is not continuous at a point \(a \in \mathbb{R}\), then the "jump size" \(F(a) - F(a -)\) is equal to the probability that \(X = a\).
+    \item If \(F\) is continuous at a point \(a \in \mathbb{R}\), then \(\mathbb{P}[X = a] = 0\).
+\end{itemize}
+
+\subsection{Almost Sure Events}
+
+\textbf{Definition:} Let \(A \in \mathcal{F}\) be an event. We say that \(A\) occurs \textbf{almost surely (a.s.)} if
+\[
+    \mathbb{P}[A] = 1.
+\]
+
+\textit{Remark:} This notion can be extended to any set \(A \subset \Omega\): We say that \(A\) occurs almost surely if there exists an event \(A' \in \mathcal{F}\) such that \(A' \subset A\) and \(\mathbb{P}[A'] = 1\).
+
+\subsection{Discrete Random Variables}
+
+\textbf{Definition (Discrete Random Variables):} A random variable \(X : \Omega \to \mathbb{R}\) is said to be \textbf{discrete} if there exists some set \(W \subset \mathbb{R}\) finite or countable such that
+\[
+    X \in W \quad a.s.
+\]
+
+\textit{Remark:} If the sample space \(\Omega\) is finite or countable, then every random variable \(X : \Omega \to \mathbb{R}\) is discrete.
+
+\textbf{Definition:} Let \(X\) be a discrete random variable taking some values in some finite or countable set \(W \subset \mathbb{R}\). The \textbf{distribution of} \(X\) is the sequence of numbers \((p(x))_{x \in W}\) defined by
+\[
+    \forall x \in W : p(x) := \mathbb{P}[X = x].
+\]
+
+\begin{cbox}
+    \textbf{Proposition:} The distribution \((p(x))_{w \in W}\) of a discrete random variable satisfies
+    \[
+        \sum_{x \in W} p(x) = 1.
+    \]
+\end{cbox}
+
+\begin{ebox}
+    \textbf{Example:} Consider the random variable defined by
+    \[
+        \forall \omega \in \Omega : X(\omega) := \begin{cases}
+            -1, &\text{if } \omega = 1, \, 2, \, 3,\\
+            0, &\text{if } \omega = 4,\\
+            2, &\text{if } \omega = 5, \, 6.
+        \end{cases}
+    \]
+    Then \(X\) takes values in \(W = \{-1, \, 0, \, 2\}\) almost surely and its distribution is given by
+    \[
+        p(-1) = \frac{1}{2}, \quad p(0) = \frac{1}{6}, \quad p(2) = \frac{1}{3}.
+    \]
+\end{ebox}
+
+\textit{Remark:} Conversely, if we are given a sequence of numbers \((p(x))_{x \in W}\) with values in \([0, \, 1]\) and such that \(\sum_{x \in W} p(x) = 1\), then there exists a probability space \((\Omega, \, \mathcal{F}, \, \mathbb{P})\) and a random variable \(X\) with associated distribution \((p(x))\). This observation is important in practice, it allows us to write: "\textit{Let \(X\) be a discrete random variable with distribution \((p(x))_{x \in W}\).}"
+
+\subsubsection{From \(p\) to \(F_X\)}
+
+\begin{cbox}
+    \textbf{Proposition:} Let \(X\) be a discrete random variable with values in a finite or countable set \(W\) almost surely, and distribution \(p\). Then the distribution function of \(X\) is given by
+    \[
+        \forall x \in \mathbb{R} : F_X(x) = \sum_{y \leq x, \,y \in W} p(y).
+    \]
+\end{cbox}
+
+\subsubsection{From \(F_X\) to \(p\)}
+
+Given a discrete random variable \(X\). A random variable with a piecewise cosntant function \(F\) is discrete and \(W\) and \(p\) are given by:
+
+\begin{itemize}
+    \item \(W = \{\text{positions of the jumps of } F_X\}\)
+    \item \(p(x) = \text{"height of the jump" at } x \in W\)
+\end{itemize}
+
+\subsection{Examples of Discrete Random Variables}
+
+\subsubsection{Bernoulli Distribution}
+
+\textbf{Definition (Bernoulli):} Let \(0 \leq p \leq 1\). A random variable \(X\) is said to be a \textbf{Bernoulli random variable with parameter} \(p\) if it takes values in \(W = \{0, \, 1\}\) and
+\[
+    \mathbb{P}[X = 0] = 1 - p \quad \text{and} \quad \mathbb{P}[X = 1] = p.
+\]
+In that case, we write \(X \sim \text{Ber}(p)\).
+
+\subsubsection{Binomial Distribution}
+
+\textbf{Definition (Binomial):} Let \(0 \leq p \leq 1\), let \(n \in \mathbb{N}\). A random variable \(X\) is said to be a \textbf{binomial random variable with parameters} \(n\) \textbf{and} \(p\) if it takes values in \(W = \{0,..., \, n\) and
+\[
+    \forall k \in \{0,..., \, n\} : \mathbb{P}[X = k] = \binom{n}{k} p^k (1 - p)^{n - k}.
+\]
+In that case we write \(X \sim \text{Bin}(n, \, p)\). This appears in applications when we consider the number of successes in a repetition of Bernoulli experiments.
+
+\begin{cbox}
+    \textbf{Proposition (Sum of independent Bernoulli and binomial):} Let \(0 \leq p \leq 1\), let \(n \in \mathbb{N}\). Let \(X_1,..., \, X_n\) be independent Bernoulli random variables with parameter \(p\). Then
+    \[
+        S_n := X_1 + \cdots + X_n
+    \]
+    is a binomial random variable with parameter \(n\) and \(p\).
+\end{cbox}
+
+\textit{Remark:} In particular, the distribution \(\text{Bin(1, \, p)}\) is the same as the distribution \(\text{Ber(p)}\). One can also check that if \(X \sim \text{Bin}(m, \, p)\) and \(Y \sim \text{Bin}(n, \, p)\) and \(X, \, Y\) are independent, then \(X + Y = \text{Bin}(m + n, \, p)\).
+
+\subsubsection{Geometric Distribution}
+
+\textbf{Definition (Geometric):} Let \(0 \leq p \leq 1\). A random variable \(X\) is said to be a \textbf{geometric random variable with parameter} \(p\) if it takes values in \(W = \mathbb{N} \setminus \{0\}\) and
+\[
+    \forall k \in \mathbb{N} \setminus \{0\} : \mathbb{P}[X = k] = (1 - p)^{k - 1} \cdot p.
+\]
+In that case, we write \(X \sim \text{Geom}(p)\).
+
+The geometric random variable appears naturally as the first success in an infinite sequence of Bernoulli experiments with parameter \(p\). This is formalized by the following proposition.
+
+\begin{cbox}
+    \textbf{Proposition:} Let \(X_1, \, X_2,...\) be a sequence of infinitely many independent Bernoulli r.v.'s with parameter \(p\). Then
+    \[
+        T := \min \{n \geq 1 : X_n = 1\}
+    \]
+    is a geometric random variable with parameter \(p\).
+\end{cbox}
+
+\begin{cbox}
+    \textbf{Proposition:} Let \(T \sim \text{Geom}(p)\) for some \(0 < p < 1\). Then
+    \[
+        \forall n \geq 0, \, \forall k \geq 1 : \mathbb{P}[T \geq n + k \, | \, T > n] = \mathbb{P}[T \geq k].
+    \]
+\end{cbox}
+
+\subsubsection{Poisson Distribution}
+
+\textbf{Definition:} Let \(\lambda > 0\) be a positive real number. A random variable \(X\) is said to be a \textbf{Poisson random variable with parameter} \(\lambda\) if it takes values in \(W = \mathbb{N}\) and
+\[
+    \forall k \in \mathbb{N} : \mathbb{P}[X = k] = \frac{\lambda^k}{k!}e^{- \lambda}.
+\]
+In this case, we write \(X \sim \text{Poisson}(\lambda)\).
+
+The Poisson distribution appears naturally as an approximation of a binomial distribution when the parameter \(n\) is large and the parameter \(p\) is small, as stated formally in the following proposition.
+
+\begin{cbox}
+    \textbf{Proposition (Poisson approximation of the binomial):} Let \(\lambda > 0\). For every \(n \geq 1\), consider a random variable \(X_n \sim \text{Bin}(n, \, \frac{\lambda}{n})\). Then
+    \[
+        \forall k \in \mathbb{N} : \lim_{n \to \infty} \mathbb{P}[X_n = k] = \mathbb{P}[N = k],
+    \]
+    where \(N\) is a Poisson random variable with parameter \(\lambda\).
+\end{cbox}
+
+\subsection{Continuous Random Variables}
+
+\textbf{Definition (Continuous Random Variables):} A random variable \(X : \Omega \to \mathbb{R}\) is said to be \textbf{continuous} if its distribution function \(F_X\) can be written as
+\[
+    F_X(a) = \int_{- \infty}^a f(x) \, dx \quad \text{for all } a \in \mathbb{R}
+\]
+for some nonnegative function \(f : \mathbb{R} \to \mathbb{R}_+\), called the \textbf{density} of \(X\).
+
+\textit{Intuition:} \(f(x) \, dx\) represents the probability that \(X\) takes a value in the infinitesimal interval \([x, \, x + dx]\).
+
+\begin{cbox}
+    \textbf{Proposition:} The density \(f\) of a random variable satisfies
+    \[
+        \int_{- \infty}^{+ \infty} f(x) \, dx = 1.
+    \]
+\end{cbox}
+
+\subsubsection{From \(f\) to \(F_X\)}
+
+Let \(X\) be a continuous random variable with density \(f\). By definition, the distribution function \(F_X\) can be calculated as the integral
+\[
+    F_X(x) = \int_{- \infty}^{x} f(y) \, dy.
+\]
+
+\subsubsection{From \(F_X\) to \(f\)}
+
+Since one goes from \(f\) to \(F_X\) by integrating, it is natural to expect that the reverse operation is to take the derivative. This is in general the case, provided \(F_X\) is regular enough. The following theorem will be useful in applications to calculate densities.
+
+\begin{tbox}
+    \textbf{Theorem:} Let \(X\) be a random variable. Assume that the distribution function \(F_X\) is continuous and piecewise \(\mathcal{C}^1\), i.e. that there exists \(x_0 = - \infty < x_1 < \cdots < x_{n-1} < x_n = + \infty\) such that \(F_X\) is \(\mathcal{C}^1\) on every interval \((x_i, \, x_{i + 1})\). Then \(X\) is a continuous random variable and a density \(f\) can be constructed by defining
+    \[
+        \forall x \in (x_i, \, x_{i + 1}) : f(x) = F'_X(x)
+    \]
+    and setting arbitrary values at \(x_1,..., \, x_{n-1}\).
+\end{tbox}
+
+\end{document}
