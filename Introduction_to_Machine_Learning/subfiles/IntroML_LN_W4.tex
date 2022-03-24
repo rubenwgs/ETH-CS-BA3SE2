@@ -180,10 +180,182 @@ Recall the \textbf{logstic loss} to be \(l_{log}(f(x), \, y) = \log (1 + e^{-yf(
 
 For linear classifiers, the \textbf{training loss} is defined as \(L(w) = \frac{1}{n}\sum_{i = 1}^n \log(1 + e^{-y_iw^Tx_i})\) for the training points \(\{(x_i, \, y_i)\}_{i = 1}^n\).
 
+Further, we consider linearly parameterized \(f_w(x) = \langle w, \, x \rangle\) and our gradient descent iterates are
+
+\[
+    w^{t + 1} = w^t - \eta \frac{1}{n} \sum_{i = 1}^n \nabla_w g(y \langle w^t, \, x \rangle) \nabla_w y \langle w^t, \, x \rangle
+\]
+
+We use the chain rule to compute \(\nabla_w g(y \langle w^t, \, x \rangle) = g'(y \langle w^t, \, x \rangle)\nabla_w y \langle w^t, \, x \rangle\). After that, the update reads
+
+\[
+    w^{t + 1} = w^t + \eta_t \frac{1}{n} \sum_{i = 1}^n \frac{y_ix_i}{1 + e^{y_iw^Tx_i}}
+\]
+
+Assuming linearly separable data, the gradient descent (initialized at 0) on the logistic loss converges to the direction \(w_{MM}\) that maximizes the minimum \(l_2\)-distance among all points. In particular, we can write \(w_{MM} = \arg \max_{||w||_2 = 1} \min_i y_i \langle w, \, x_i \rangle\).
+
+\begin{figure}[H]
+    \includegraphics[width=6cm]{../images/IntroML_Fig4-6}
+    \centering
+\end{figure}
+
 \subsubsection{Margin and Support Vector Machines}
 
-\subsubsection{Multi-Class Classification}
+The \textbf{max-margin direction} satisfies \(w_{MM} = \arg \max_{||w||_2 = 1} \min_i y_i \langle w, \, x_i \rangle =: \arg \max_{||w||_2 = 1} =\\ \text{margin}(w)\) and maximizes the minimum distance of points to the decision boundary \(\langle w, \, x \rangle = 0\).
 
-\subsection{Non-Linear Classifiers}
+For a general \(w\) that correctly separates the data, \(\frac{\text{margin}(w)}{||w||_2} = \frac{|w^Tx_i|}{||w||_2} = \frac{\text{margin}(\alpha w)}{||\alpha w ||_2}\), for any \(\alpha \in \mathbb{R}\), is the min. distance of any point to the boundary.
+
+\begin{figure}[H]
+    \includegraphics[width=6cm]{../images/IntroML_Fig4-7}
+    \centering
+\end{figure}
+
+More generally, we cal also rewrite the optimization problem to:
+
+\[
+    w_{MM} || \arg \max_w \min_i y_i \langle \frac{w}{||w||_2}, \, x_i \rangle = \arg \max_w \frac{\text{margin}(w)}{||w||_2}
+\]
+
+We can rescale any unit norm \(w\) by \(\alpha = \frac{1}{\text{margin}(w)}\), i.e. \(\tilde{w} = \alpha w\) such that \(\text{margin}(\tilde{w}) = \min_i y_i \tilde{w}^Tx_i = \alpha \text{margin}(w) = 1\) with min. distance to dec. boundary \(\frac{\text{margin}(\tilde{w})}{||\tilde{w}||_2} = \frac{1}{||\tilde{w}||_2}\).
+
+Hence, instead of searching within unit norm \(w\) to find \(w_{MM}\) with maximum min-distance \(\text{margin}(w)\), we can search within all \(\tilde{w}\) with \(\text{margin}(\tilde{w}) = 1\) to find the one that maximizes min-distance \(\frac{1}{||\tilde{w}||_2}\):
+
+\[
+    w_{MM} || \arg \min_{\tilde{w}} ||\tilde{w}||_2 \text{ s.t. } y_i\tilde{w}^Tx_i \geq 1 \quad \forall i = 1,..., \, n \quad \text{(Support Vector Machine SVM)}
+\]
+
+If data is separable, we can solve the constrained optimization problem \(\min_w ||w||_2\) such that \(y_iw^Tx_i \geq 1\) for all \(i = 1,..., \, n\). This is also called \textbf{hard-margin SVM.} However, if the data is \textit{not separable,} the cosntraints cannot hold for all \(i\), we thus need to allow some "slack" in the constraint:
+
+\[
+    \min_{w, \, \xi} \frac{1}{2} ||w||^2 + \lambda \sum_i\xi_i \quad \text{s.t.} \quad y_iw^Tx_i \geq 1 - \xi_i, \, \xi_i \geq 0, \quad \forall i = 1,..., \, n.
+\]
+
+For a given \(w\), the optimal \(\xi_i\) is given by:
+
+\[
+    \xi_i = \begin{cases}
+        1 - y_iw^Tx_i, &\text{if } y_iw^Tx_i \leq 1 \\
+        0, &\text{else}
+    \end{cases}
+\]
+
+\subsubsection{Comparing Different Loss Functions}
+
+\paragraph{Average vs. min distance for very close classes} The average margin is too sensitive to outliers that are far away, which we actually don't care about:
+
+\begin{figure}[H]
+    \includegraphics[width=15cm]{../images/IntroML_Fig4-8}
+    \centering
+\end{figure}
+
+\paragraph{Average vs. min stance for close classes} When there's some distance ebtween the classes and they are concentrated, the min and average distance are the same:
+
+\begin{figure}[H]
+    \includegraphics[width=15cm]{../images/IntroML_Fig4-9}
+    \centering
+\end{figure}
+
+\paragraph{Average vs. min distance for imbalanced and close classes} With the average margin, the distance to the "majority" class is maximized with reward at the expense of msitakes in the "minority" class:
+
+\begin{figure}[H]
+    \includegraphics[width=15cm]{../images/IntroML_Fig4-10}
+    \centering
+\end{figure}
+
+\paragraph{Average vs. min distance for imbalanced and far away classes} With the average margin, again, the distance to the "majority" class is amximized with reward at the expense of mistakes in the "minority" class:
+
+\begin{figure}[H]
+    \includegraphics[width=15cm]{../images/IntroML_Fig4-11}
+    \centering
+\end{figure}
+
+\subsubsection{Non-Linear Classifiers}
+
+Instead of just considering the linear function class \(F_w = \{f : f(x) = w^Tx, \, w \in R^d\}\), we can again look at linear functions on non-linear features:
+
+\[
+    F_{\phi} = \{f : f(x) = w^T\phi(x), \, \phi \in R^p\}
+\]
+
+\begin{figure}[H]
+    \includegraphics[width=11cm]{../images/IntroML_Fig4-12}
+    \centering
+\end{figure}
+
+\subsection{Other Metrics for Evaluating Classifiers}
+
+\subsubsection{Classification \& Hypothesis Testing Angle}
+
+What follows is for all binary classification: Let's assume we care about the errors differently, i.e. we want to solve the following optimization problem that threats the two types of errors asymmetricall, e.g.
+
+\[
+    \min \frac{1}{\# healty} \sum_{(x, \, y) : y = healty} \mathbb{I}_{\hat{y} = sick} \quad \text{s.t.} \quad \frac{1}{\# sick} \sum_{(x, \, y) : y = sick} \mathbb{I}_{\hat{y} = healty} \leq 10 \%,
+\]
+
+where the part on the left is the \(error_2\) and the part on the right is the \(error_1\).
+
+A natural way to obtain this optimization program is using the notations in \textit{hypothesis testing} that tries to find a test that \textit{maximizes power} (\(1 - error_2\)) while \textit{controlling false alarm} (\(error_1\)).
+
+We should choose the class that is more crucial to get right to be the class 0 (\(H_0\) hypothesis). The workflow of classification from the hypothesis test perspective is as follows:
+
+\begin{figure}[H]
+    \includegraphics[width=15cm]{../images/IntroML_Fig4-13}
+    \centering
+\end{figure}
+
+Above, we used \(\hat{p}(x) = \hat{p}_1 = \frac{1}{1 + e^{- \hat{f}(x)}}\) and for prediction we effectively used \(\tau = \frac{1}{2}\), since \(\hat{y} = 1\) if \(\hat{p}_1 > \hat{p}_0\) which is the same as \(\hat{p}_1 > \frac{1}{2}\) because \((\hat{p}_0, \, \hat{p}_1)\) is a probability vector.
+
+Usually, we want to control the \textit{false-positive} rate. The false positive rate FPT is given by \(FPR = \frac{FP}{TN + FP} = \frac{\#[\hat{y} = + 1 \cap y = -1]}{\#[y = -1]}\) and describes the case "among all \(x\) where \(H_0(x)\) is correct, how many are (wrongfully) rejected?". The \textit{false negative rate} is given by \(FNR = \frac{FN}{FN + TP} = \frac{\#[\hat{y} = -1 \cap y = + 1]}{\#[y = + 1]}\).
+
+\paragraph{Summary: Hypothesis testing vs. binary classification} For \textit{classification,} we compare the learned function \(\hat{p}(x)\) evaluated at tested isntance \(x\), with \(\tau\):
+
+\begin{figure}[H]
+    \includegraphics[width=15cm]{../images/IntroML_Fig4-14}
+    \centering
+\end{figure}
+
+For \textit{hypothesis testing,} we compare test statistic (function of all samples \(\sim P\)) with a threshold:
+
+\begin{figure}[H]
+    \includegraphics[width=15cm]{../images/IntroML_Fig4-15}
+    \centering
+\end{figure}
+
+In both cases, for fixed \(\hat{p}\) or \(\hat{T}\), the larger \(tau\) the fewer false positives but the more false negatives occur and vice versa.
+
+\begin{figure}[H]
+    \includegraphics[width=11cm]{../images/IntroML_Fig4-16}
+    \centering
+\end{figure}
+
+\subsubsection{AUROC}
+
+\begin{figure}[H]
+    \includegraphics[width=11cm]{../images/IntroML_Fig4-17}
+    \centering
+\end{figure}
+
+Remember that \(TP/FP\) etc. are defined for a fixed threshold \(\tau\) and \(\hat{p}\) via
+
+\[
+    \hat{y} = \begin{cases}
+        +1, &\text{if } \hat{p}(x) > \tau, \\
+        -1, &\text{if } \hat{p}(x) > \tau.
+    \end{cases}
+\]
+
+By sticking with the same \(\hat{p}\) but varying \(\tau\) we obtain different classifiers. If we care about conditionals on true classes, we can consider the \textbf{Receiver Operator Characterstic (ROC) curve:}
+
+\begin{figure}[H]
+    \includegraphics[width=8cm]{../images/IntroML_Fig4-18}
+    \centering
+\end{figure}
+
+In the above figure, C and D are bad and could come from random guessing or even worse. 
+
+\begin{figure}[H]
+    \includegraphics[width=11cm]{../images/IntroML_Fig4-19}
+    \centering
+\end{figure}
 
 \end{document}
