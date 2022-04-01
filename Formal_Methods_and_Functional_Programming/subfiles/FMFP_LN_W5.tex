@@ -9,7 +9,6 @@
 \usepackage{fancyhdr}
 \usepackage{graphicx}
 \usepackage{float}
-\usepackage{subfiles}
 
 \setlength{\parindent}{0em}
 \setlength{\parskip}{0.4em}
@@ -27,7 +26,7 @@ boxrule=0pt,arc=0pt,boxsep=2pt,left=2pt,right=2pt,leftrule=2pt}
 \newtcolorbox{ebox}{colback=exampleblue!20,colframe=exampleblue,
 boxrule=0pt,arc=0pt,boxsep=2pt,left=2pt,right=2pt,leftrule=2pt}
 
-\title{FMFP - Complete Summary}
+\title{FMFP - Lecture Notes Week 5}
 \author{Ruben Schenk, ruben.schenk@inf.ethz.ch}
 \date{\today}
 
@@ -35,21 +34,29 @@ boxrule=0pt,arc=0pt,boxsep=2pt,left=2pt,right=2pt,leftrule=2pt}
 \fancyhf{}
 \rhead{ruben.schenk@inf.ethz.ch}
 \rfoot{Page \thepage}
-\lhead{FMFP - Complete Summary}
+\lhead{FMFP - Lecture Notes Week 5}
 
 \begin{document}
+
+\section{Typing}
+
+\subsection{Overview}
+
+\textbf{Type checking} should prevent "dangerous expressions", such as \verb|2 + True|, \verb|[2] : [3]|, etc. Dangerous expressions lead to \textit{runtime errors.}
+
+The objectives for a type checker are as follows:
+
+\begin{itemize}
+    \item Quick, decidable, static analysis
+    \item Permit as much generality / re-usability as possible
+    \item Prevent runtime errors
+\end{itemize}
+
+\subsection{Mini-Haskell}
 
 \maketitle
 \newpage
 
-\subfile{./subfiles/FMFP_LN_W1}
 
-\subfile{./subfiles/FMFP_LN_W2}
-
-\subfile{./subfiles/FMFP_LN_W3}
-
-\subfile{./subfiles/FMFP_LN_W4}
-
-\subfile{./subfiles/FMFP_LN_W5}
 
 \end{document}
