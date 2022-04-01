@@ -195,4 +195,94 @@ Finally, the \textbf{management agreement} is an agreement between the managemen
     \item etc.
 \end{itemize}
 
+\section{How To Predict The Future}
+
+\subsection{The Logistic Equation}
+
+\subsubsection{Intuition}
+
+\begin{tbox}
+    The size of a population, with competition for \textbf{limited resource,} grows according to a very specific process. It has an \textbf{S-shape.}
+\end{tbox}
+
+Think of a pair of rabbits on a fenced-off range. There is a population explosion in the beginning. However, the available food can feed only a limited number of rabbits. As the population approaches its limit, the growth rate slows down. Eventually, the population stabilizes as the S-curve reaches its ceiling.
+
+\begin{figure}[H]
+    \includegraphics[width=9cm]{../images/EnpRisk_Fig5-2}
+    \centering
+\end{figure}
+
+\subsubsection{Mathematical Formulation}
+
+The growth of a population \(P\) in competition can be described by what we call the \textbf{"logistic" differential equation:}
+
+\[
+    \frac{dP}{dt} = rP(t) \Big\lbrack 1 - \frac{P(t)}{K} \Big\rbrack
+\]
+
+In the beginning, for small \(t\), we are in the exponential phase with \(P(t) << K\), the growth is proportional in \(p\) with factor of \(r\):
+
+\[
+    \frac{dP}{dt} \simeq r P(t)
+\]
+
+Later, \(P(t)\) plateaus and reaches the constant value of \(K\), growth stops and the population remains constant. It has reached a ceiling, which is, by definition, the \textbf{carrying capacity} (\(K\)).
+
+The solution to this differential equation, with \(P_0\) being the initial population (\(P(t = 0) = P_0\)), is called the \textbf{logistic function:}
+
+\begin{tbox}
+    The \textbf{logistic function} can be written as follows:
+
+    \[
+        P(t) = \frac{KP_0e^{rt}}{K + P_0(e^{rt} - 1)}
+    \]
+\end{tbox}
+
+If there are no limitations, \(K\) is infinite and:
+
+\[
+    P(t) = P_0e^{rt}
+\]
+
+\subsubsection{Generalized Logistic Model of COVID-19}
+
+There are two types of models to describe epidemics:
+
+\begin{itemize}
+    \item \textbf{Phenomenological models:} an empirical approach without a specific basis on the physical laws or mechanisms that give rise to the observed patterns in the data.
+    \item \textbf{Mechanistic models:} incorporate key physical laws or mechanisms involved in the dynamics of the problem under study in order to explain patterns in the observed data.
+\end{itemize}
+
+We can relax the assumption of exponential growth via "scaling of growth" parameter \(p\):
+
+\[
+    \frac{dC}{dt} = rC^{p}(t),
+\]
+
+where \(\frac{dC}{dt}\) describes the incidence growth phase over time \(t\), the solution \(C(t)\) describes the cumulative number of cases at \(t\):
+
+\begin{itemize}
+    \item \(p = 0\): this equation describes constant incidence over time and the cumulative number grows linearly.
+    \item \(p = 1\): well-known exponential growth model.
+    \item \(0 < p < 1\): sub-exponential growth patters.
+    \item \(1 < p\): super-exponential growth leading to finite-time singularity.
+\end{itemize}
+
+We can give some extensions to the logistic type model:
+
+\begin{itemize}
+    \item Generalized-logistic growth model (GLM):
+    \[
+        \frac{dC}{dt} = rC^p(1 - \frac{C}{K})
+    \]
+    \item Richards model:
+    \[
+        \frac{dC}{dt} = rC(1 - \Big(\frac{C}{K}\Big)^{\alpha})
+    \]
+    \item Generalized Richards model (GRM):
+    \[
+        \frac{dC}{dt} = rC^p(1 - \Big(\frac{C}{K}\Big)^{\alpha})
+    \]
+\end{itemize}
+
 \end{document}
