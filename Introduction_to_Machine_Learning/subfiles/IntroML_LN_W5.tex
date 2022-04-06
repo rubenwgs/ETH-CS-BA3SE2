@@ -137,4 +137,112 @@ Using the kernel trick, for ridge regression $\frac{1}{n}||y - \Phi w||^2 + \lam
     \frac{1}{n}||y - \Phi w||^2 + \lambda||w||^2 = \frac{1}{n}||y - \Phi \Phi^T \alpha ||^2 + \lambda || \Phi^T \alpha ||^2 = \frac{1}{n}||y - K \alpha ||^2 + \lambda \alpha^T K \alpha.
 \]
 
+\subsection{Infinite-Dimensional Features \& RBF Kernels}
+
+\subsubsection{Infinite-Dimensional Feature Maps}
+
+\begin{figure}[H]
+    \includegraphics[width=15cm]{../images/IntroML_Fig5-2}
+    \centering
+\end{figure}
+
+We can write $f(x) = \langle w, \, \phi(x) \rangle_{l^2}$ and again define $S = \text{span}\{\phi(x_1),..., \, \phi(x_n)\} \subset l^2$. For ridge regression, by orthogonal decomposition, we again have $||w||^2 = ||\Pi_Sw||^2 + ||\Pi_{S^{\bot}}w||^2$, and hence can use the same arguments to obtain:
+\[
+    ||y - \Phi w||^2 + \lambda ||w||^2 = ||y - K \alpha||^2 + \lambda \alpha^TK \alpha
+\]
+
+\subsubsection{Valid Kernels \& Compositions}
+
+But how do we find infinite dimensional features $\phi$ such that $k$ is easy to compute? No general recipe! But we can do some reverse engineering. We start with a computable kernel first and then find the features:
+
+\begin{enumerate}
+    \item Define some bivariate function $x : X \times X \to \mathbb{R}$ with $X \subset \mathbb{R}^d$
+    \item Then, find $\phi$ such that $\langle \phi (x), \, \phi(y) \rangle = k(x, \, y)$ where $\phi(x) \in l^2$
+\end{enumerate}
+
+For which $k$ do such $\phi$ exist? The necessary conditions for $k$ to be inner products of feature vectors are as follows:
+
+\begin{itemize}
+    \item Kernel functions must be symmetric because they are inner products ($k(x, \, z) = k(z, \, x)$)
+    \item The kernel function $k$ is positive-semidefinite, i.e. the kernel matrix $K$ with $(K)_{ij} = k(x_i, \, x_j)$ is positive-semidefinite for any choice of inputs $x_1,..., \, x_n$ and any $n \in \mathbb{N}$
+\end{itemize}
+
+\textbf{Inner product kernels} $k(x, \, z) = h(\langle x, \, z \rangle)$ are positive-semidefinite if the Taylor series $h(\langle x, \, z \rangle) = \sum_{j = 0}^{\infty} a_j (\langle x, \, z \rangle)^j$ has $a_j \geq 0$ for all $j \geq 0$.
+
+\textbf{Radial Basis Functions (RBF) kernel} $k(x, \, z) = h(||x - z||)$ are often positive-semidefinite, e.g. such as $\alpha$-exponential kernels $k(x, \, z) = \exp(- \frac{||x-z||^{\alpha}}{\tau})$ with bandwidth parameter $\tau$ such the
+
+\begin{itemize}
+    \item Gaussian kernel with $\alpha = 2$
+    \item Laplacian kernel with $\alpha = 1$
+\end{itemize}
+
+What are the features corresponding to a given bivariate valid kernel function?
+
+\begin{tbox}
+    \textbf{Mercer's Theorem:} For kernel $k : X \times X \to \mathbb{R}$ on a compact domain $X \in \mathbb{R}^d$, we can find a sequence $\{\mu_j\}_{j = 1}^{\infty}$ and a basis $\{\phi_j\}_{j = 1}^{\infty}$ of $L_2(X)$ (a sequence of functions) such that $k(x, \, y) = \sum_{j = 1}^{\infty} \mu_j \phi_j(x)\phi_j(y) = \langle \tilde{\phi}(x), \, \tilde{\phi}(y) \rangle_{l_2}$ for all $x,y \in X$. The features $\tilde{\phi}(x)$ are induced by a kernel with $\tilde{\phi}_j(x) = \sqrt{\mu_j}\phi_j(x)$.
+\end{tbox}
+
+\subsubsection{Function Space Induced by Kernels}
+
+More generally, a kernel $k : X \times X \to \mathbb{R}$ induces a reproducing kernel Hilbert space (RKHS):
+\[
+    F_k = \{f : f(x) = \sum_{j = 1}^m \beta_j k(x_j, \, x) \text{ for } x_j \in X, \, m \in \mathbb{N}\}
+\]
+
+We can define an inner product for this function space: For any two functions $f(x) = \sum_{l = 1}^m \alpha_l k(x_l, \, x)$ and $g(x) = \sum_{r = 1}^q \beta_r k(x_r, \, x)$, the \textit{inner product} reads:
+\[
+    \langle f, \, g \rangle_F = \sum_r \sum_l \alpha_l \beta_r k(x_r, \, x_l)
+\]
+
+Hence, the \textit{Hilbert norm} of $f(x) = \sum_{l = 1}^m \alpha_l k(x_l, \, x)$ reads:
+\[
+    ||f||_F^2 = \langle f, \, f \rangle_F = \sum_{l = 1}^m \alpha_i \alpha_j k(x_i, \, x_j) = \alpha^T K \alpha
+\]
+
+\subsection{Other Non-Linear Methods}
+
+\subsubsection{K-Nearest Neighbor (kNN)}
+
+With the method for \textbf{k-Nearest Neighbors} there is actually no training involved! The classification is done during test time:
+
+\begin{enumerate}
+    \item Given training set $D$
+    \item Pick $k$ and distance metric $d$ in $X$
+    \item For given $x$, find among $x_1,..., \, x_n \in D$ the $k$ closest to $x \to x_{i_1},..., \, x_{i_k}$
+    \item Output the majority vote of labels $y_{i_1},..., \, y_{i_k}$
+\end{enumerate}
+
+\subsubsection{Decision Trees \& Random Forests (RF)}
+
+\textbf{Decision Trees} are another method of classification. They:
+
+\begin{itemize}
+    \item Return a partition of $X$ with sets aligned with canonical coordinates
+    \item Each $x$ in a set $S$ of the partition is labeled $\hat{y} =$ majority class in set $S$
+    \item Sets in partition are determined by \textit{leaf nodes} of a binary tree that contains data points that satisfy decision rules along the path
+\end{itemize}
+
+The creation of binary trees $f : X \to Y$ is done as follows:
+
+\begin{itemize}
+    \item each tree node $v$ is associated with a splitting ruler $r_v : X \to \{0, \, 1\}$
+    \item each leaf node returns $\hat{y} =$ majority class in set $S$
+\end{itemize}
+
+The decision rule at tree node $v$ has the following characteristics:
+
+\begin{itemize}
+    \item Decision rule at some node $v$ is usually of the form $r_v(x) = \mathbb{I}\{x_i > t_i\}$
+    \item For each node $v$, choose feature $i$ and threshold $t_i$ that minimizes the uncertainty $u$ on sets $D(v_1) = \{x \in D(v) : r_v(x) = 1\}$ and $D(v_0) = \{x \in D(v) : r_v(x) = 0\}$
+\end{itemize}
+
+\begin{ebox}
+    \textbf{Example:}
+
+    \begin{figure}[H]
+        \includegraphics[width=15cm]{../images/IntroML_Fig5-3}
+        \centering
+    \end{figure}    
+\end{ebox}
+
 \end{document}
