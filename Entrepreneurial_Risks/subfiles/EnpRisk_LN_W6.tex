@@ -39,12 +39,68 @@ boxrule=0pt,arc=0pt,boxsep=2pt,left=2pt,right=2pt,leftrule=2pt}
 \begin{document}
 
 \maketitle
-\newpage
+
+\subsubsection{Generalized Logistic Growth}
+
+Many systems exhibit succession of S-curves because the advances in technology etc. increase the carrying capacity $K$. One idea to \textit{generalize the logistic growth} is to include into this the logistic equation with a population dependent carrying capacity with \textit{delay time} $\tau$:
+
+\[
+    \frac{dP}{dt} = rP(t) \big[1 - \frac{P(t)}{K(t)}\big], \text{ with } K(t) = A + BP(t - \tau)
+\]
+
+In other words:
+
+\[
+    \frac{dx}{dt} = \alpha \cdot x(t) + \beta \cdot \frac{x^2(t)}{a + bx(t - \tau)},
+\]
+
+with $x \sim P$ and parameters $a, \, b$ related to $r, \, A$ and $B$. We can distinguish four different scenarios:
+
+\begin{itemize}
+    \item $\alpha = +1, \, \beta = -1:$ gain and competition
+    \item $\alpha = +1, \, \beta = +1:$ gain and cooperation
+    \item $\alpha = -1, \, \beta = -1:$ loss and competition
+    \item $\alpha = -1, \, \beta = +1:$ loss and cooperation
+\end{itemize}
+
+Another idea is to instead of a linearly growing capacity, consider the case of exponential growth:
+
+\[
+    \frac{dx}{dt} = \sigma_1 x(t) - \sigma_2 \frac{x^2}{y(x)}, \text{ with } y(x) = \exp(bx(t - \tau))
+\]
+
+In other words:
+
+\[
+    \frac{dx}{dt} = \sigma_1 x(t) - \sigma_2 x^2(t)e^{-bx(t - \tau)}
+\]
+
+We can distinguish the same cases as before with $\sigma_1 = \pm 1$ and $\sigma_2 = \pm 1$.
+
+Finally, we can also consider \textbf{coupled logistic equations.} The idea is, that instead of only one species, we can also have two interacting species:
+
+\[
+    \frac{dx}{dt} = x - \frac{x^2}{1 + bxz} \quad \frac{dz}{dt} = z - \frac{z^2}{1 + gxz},
+\]
+
+where $x$ is the species one and $y$ is the species two.
 
 \subsubsection{Interlude: Chaos Theory}
 
-\subsection{The Diffusion of Innovation}
+The \textbf{logistic map} is defined as:
 
-\subsection{Case Study: Valuation of Facebook}
+\[
+    x(n + 1) = \alpha x(n) [1 - x(n)]
+\]
+
+It can be shown that $x$ is \textit{chaotic} for almost all values of $\alpha \in [3.569..., \, 4]$.
+
+It can also be shown that the logistic map is nothing but a discrete version of the logistic equation
+
+\[
+    \frac{P(t)}{dt} = rP(t) \big[1 - \frac{P(t)}{K} \big],
+\]
+
+with $\alpha = r + 1$.
 
 \end{document}
