@@ -1,0 +1,86 @@
+\documentclass[a4paper]{extarticle}
+\usepackage[utf8]{inputenc}
+\usepackage[a4paper, margin=1in]{geometry}
+
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{enumitem}
+\usepackage{tcolorbox}
+\usepackage{fancyhdr}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{bbm}
+
+\setlength{\parindent}{0em}
+\setlength{\parskip}{0.4em}
+
+\definecolor{theoremblue}{RGB}{1, 73, 124}
+\definecolor{corollaryblue}{RGB}{70, 143, 175}
+\definecolor{exampleblue}{RGB}{137, 194, 217}
+
+\newtcolorbox{tbox}{colback=theoremblue!20,colframe=theoremblue,
+boxrule=0pt,arc=0pt,boxsep=2pt,left=2pt,right=2pt,leftrule=2pt}
+
+\newtcolorbox{cbox}{colback=corollaryblue!20,colframe=corollaryblue,
+boxrule=0pt,arc=0pt,boxsep=2pt,left=2pt,right=2pt,leftrule=2pt}
+
+\newtcolorbox{ebox}{colback=exampleblue!20,colframe=exampleblue,
+boxrule=0pt,arc=0pt,boxsep=2pt,left=2pt,right=2pt,leftrule=2pt}
+
+\title{WuS - Lecture Notes Week 7}
+\author{Ruben Schenk, ruben.schenk@inf.ethz.ch}
+\date{\today}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{ruben.schenk@inf.ethz.ch}
+\rfoot{Page \thepage}
+\lhead{WuS - Lecture Notes Week 7}
+
+\begin{document}
+
+\maketitle
+
+\subsubsection{Unabhängigkeit}
+
+\begin{cbox}
+    \textbf{Satz:} Seien $X_1,..., \, X_n$ diskrete Zufallsvariablen mit gemeinsamer Verteilung $p = (p(x_1,..., \, x_n))_{x_1 \in W_1,..., \, x_n \in W_n}$. Die folgenden Aussagen sind äquivalent:
+
+    \begin{enumerate}
+        \item $X_1,..., \, X_n$ sind unabhängig.
+        \item $p(x_1,..., \, x_n) = \mathbb{P}[X_1 = x_1] \cdots \mathbb{P}[X_n = x_n]$ für jedes $x_1 \in W_1,..., \, x_n \in W_n$.
+    \end{enumerate}
+\end{cbox}
+
+\subsection{Stetige Gemeinsame Verteilung}
+
+\subsubsection{Definition}
+
+\textbf{Def:} Sei $n \geq 1$. Wir sagen, dass die Z.V. $X_1,...,X_n : \Omega \to \mathbb{R}$ eine \textbf{stetige gemeinsame Verteilung} besitzen, falls eine Abbildung $f : \mathbb{R}^n \to \mathbb{R}_+$ existiert, sodass
+\[
+    \mathbb{P}[X_1 \leq a_1,..., \, X_n \leq a_n] = \int_{- \infty}^{a_1} \cdots \int_{-\infty}^{a_n} f(x_1,..., \, x_n) \, dx_n ... dx_1
+\]
+für jedes $a_1,..., \, a_n \in \mathbb{R}$ gilt. Obige Abbildung $f$ nennen wir gerade \textbf{gemeinsame Dichte von} $(X_1,..., \, X_n)$.
+
+\begin{cbox}
+    \textbf{Satz:} Sei $f$ die gemeinsame Dichte der Zufallsvariablen $(X_1,..., \, X_n)$. Dann gilt
+    \[
+        \int_{- \infty}^{\infty} \cdots \int_{ - \infty}^{\infty} f(x_1,...,x_n) \, dx_n ... dx_1 = 1.
+    \]
+\end{cbox}
+
+\begin{ebox}
+    \textbf{Intuition:} Nehmen wir zum Beispiel zwei Z.V. $X, \, Y$. Intuitiv beschreibt $f(x,y) \, dxdy$ die Wahrscheinlichkeit, dass ein Zufallspunkt $(X, \, Y)$ in einem Rechteck $[x, \, x + dx] \times [y, \, y + dy]$ liegt.
+\end{ebox}
+
+\subsubsection{Erwartungswert unter Abbildungen}
+
+\begin{cbox}
+    \textbf{Satz:} Sei $\phi : \mathbb{R}^n \to \mathbb{R}$ eine Abbildung. Falls $x_1,..., \, X_n$ eine gemeinsame Dichte $f$ besitzen, dann lässt sich der Erwartungswert der Z.V. $Z = \phi(X_1,..., \, X_n)$ mittels
+    \[
+        \mathbb{E}[Z] = \int_{- \infty}^{\infty} \cdots \int_{- \infty}^{\infty} \phi(x_1,..., \, x_n) \cdot f(x_1,..., \, x_n) \, dx_1...dx_n,
+    \]
+    berechnen (solange das Integral wohldefiniert ist).
+\end{cbox}
+
+\end{document}

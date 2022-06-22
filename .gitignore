@@ -277,3 +277,4 @@ TSWLatexianTemp*
 
 # Exclude .vscode things
 .vscode/*
+.DS_Store

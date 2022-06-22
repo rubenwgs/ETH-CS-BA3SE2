@@ -1,0 +1,168 @@
+\documentclass[a4paper]{extarticle}
+\usepackage[utf8]{inputenc}
+\usepackage[a4paper, margin=1in]{geometry}
+
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{enumitem}
+\usepackage{tcolorbox}
+\usepackage{fancyhdr}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{bbm}
+
+\setlength{\parindent}{0em}
+\setlength{\parskip}{0.4em}
+
+\definecolor{theoremblue}{RGB}{1, 73, 124}
+\definecolor{corollaryblue}{RGB}{70, 143, 175}
+\definecolor{exampleblue}{RGB}{137, 194, 217}
+
+\newtcolorbox{tbox}{colback=theoremblue!20,colframe=theoremblue,
+boxrule=0pt,arc=0pt,boxsep=2pt,left=2pt,right=2pt,leftrule=2pt}
+
+\newtcolorbox{cbox}{colback=corollaryblue!20,colframe=corollaryblue,
+boxrule=0pt,arc=0pt,boxsep=2pt,left=2pt,right=2pt,leftrule=2pt}
+
+\newtcolorbox{ebox}{colback=exampleblue!20,colframe=exampleblue,
+boxrule=0pt,arc=0pt,boxsep=2pt,left=2pt,right=2pt,leftrule=2pt}
+
+\title{WuS - Lecture Notes Week 6}
+\author{Ruben Schenk, ruben.schenk@inf.ethz.ch}
+\date{\today}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{ruben.schenk@inf.ethz.ch}
+\rfoot{Page \thepage}
+\lhead{WuS - Lecture Notes Week 6}
+
+\begin{document}
+
+\maketitle
+
+\subsection{Ungleichungen}
+
+\subsubsection{Monotonie}
+
+\begin{cbox}
+    \textbf{Satz:} Seien $X, \, Y$ zwei Z.V., sodass
+    \[
+        X \leq Y \, f.s.
+    \]
+    gilt. Falls beide Erwartungswerte wohldefiniert sind foglt dann
+    \[
+        \mathbb{E}[X] \leq \mathbb{E}[Y]. \, f.s.
+    \]
+\end{cbox}
+
+\subsubsection{Markov Ungleichung}
+
+\begin{tbox}
+    \textbf{Theorem (Markov-Ungleichung):} Sei $X$ eine nicht-negative Z.V. Für jedes $a > 0$ gilt dann
+    \[
+        \mathbb{P}[X \geq a] \leq \frac{\mathbb{E}[X]}{a}.
+    \]
+\end{tbox}
+
+\subsubsection{Jensen Ungleichung}
+
+\begin{tbox}
+    \textbf{Theorem (Jensen Ungleichung):} Sei $X$ eine Z.V. Sei $\phi : \mathbb{R} \to \mathbb{R}$ eine konvexe Funktion. Falls $\mathbb{E}[\phi(x)]$ und $\mathbb{E}[X]$ wohldefiniert sind, gilt
+    \[
+        \phi(\mathbb{E}[X]) \leq \mathbb{E}[\phi(X)].
+    \]
+\end{tbox}
+
+Daraus folgt mit $\phi(x) = |x|$, dass $|\mathbb{E}[X]| \leq \mathbb{E}[|X|]$ (Dreiecksungleichung) und mit $\phi(x) = x^2$, dass $\mathbb{E}[|X|] \leq \sqrt{\mathbb{E}[X^2]}$.
+
+\subsection{Varianz}
+
+\textbf{Def:} Sei $X$ eine Zufallsvariable, sodass $\mathbb{E}[X]^2 < \infty$. Wir definieren die \textbf{Varianz von} $X$ durch
+\[
+    \sigma_X^2 = \mathbb{E}[(X - m)^2], \text{ wobei } m = \mathbb{E}[X].
+\]
+Die Wurzel aus $\sigma_X^2$ nennen wir gerade die \textbf{Standardabweichung von} $X$.
+
+Die Standardabweichung ist ein Indikator für die Fluktuation von $X$ um den \textit{Mittelwert} $m = \mathbb{E}[X]$ herum. Allgemein ist eine Zufallsvariable mit geringer Varianz konzentriert um ihren Erwartungswert $m = \mathbb{E}[X]$. Die Tschebyscheffsche Ungleichung formalisiert diese Beobachtung.
+
+\begin{cbox}
+    \textbf{Satz:} Sei $X$ eine Z.V. mit $\mathbb{E}[X^2] < \infty$. Dann gilt für jedes $a \geq 0$
+    \[
+        \mathbb{P}[|X - m| \geq a] \leq \frac{\sigma_X^2}{a^2}, \text{ wobei } m = \mathbb{E}[X].
+    \]
+\end{cbox}
+
+\begin{cbox}
+    \textbf{Satz (Grundlegende Eigenschaften der Varianz):}
+    \begin{enumerate}
+        \item Sei $X$ eine Z.V. mit $\mathbb{E}[X^2] < \infty$. Dann gilt
+        \[\sigma_X^2 = \mathbb{E}[X^2]-\mathbb{E}[X]^2.\]
+        \item Sei $X$ eine Z.V. mit $\mathbb{E}[X^2] < \infty$ und sei $\lambda \in \mathbb{R}$. Dann gilt
+        \[\sigma^2_{\lambda X} = \lambda^2 \cdot \sigma_X^2.\]
+        \item Seien $X_1,..., \, X_n$ $n$-viele paarweise unabhängige Z.V. und $S = X_1 + \cdots + X_n$. Dann gilt
+        \[\sigma_S^2 = \sigma_{X_1}^2 + \cdots + \sigma_{X_n}^2.\]
+    \end{enumerate}
+\end{cbox}
+
+\textbf{Anwendung:} Sei $S$ eine binomialverteilte Z.V. mit Parametern $n$ und $p$. Was ist die Varianz von $S$? Wir benutzen, dass $S$ die selbe Verteilung wie $S_n = X_1 + \cdots X_n$, mit $X_1,..., \, X_n$ u.i.v. Bernoulli Z.V. mit Parameter $p$ hat. Dann erhalten wir:
+
+\[
+    \sigma_S^2 = \sigma_{S_n}^2 = \sigma_{X_1}^2 + \cdots + \sigma_{X_n}^2 = n \cdot \sigma_{X_1} ^2.
+\]
+
+Zudem gilt $\sigma_{X_1}^2 = \mathbb{E}[X_i^2] - p^2 = p -  2 = p(1-p)$. Durch Einsetzen erhalten wir:
+
+\[
+    \sigma_S^2 = n \cdot p(1-p).
+\]
+
+Im Allgemeinen erhalten wir für Summen von u.i.v. Z.V. stets $\mathbb{E}[S] = n \cdot p$ und $\sigma_S = \sqrt{n} \cdot \sqrt{p(1-p)}$.
+
+\subsection{Kovarianz}
+
+\textbf{Def:} Seien $X, \, Y$ zwei Z.V. mit endlichen zweiten Momenten $\mathbb{E}[X^2] < \infty$ und $\mathbb{E}[Y^2] < \infty$. Wir definieren die \textbf{Kovarianz zwischen} $X$ \textbf{und} $Y$ durch
+\[
+    \text{Cov}(X, \, Y) = \mathbb{E}[XY] - \mathbb{E}[X]\mathbb{E}[Y].
+\]
+
+Die Kovarianz verschwindet wenn $X$ und $Y$ unabhängig sind, somit gilt:
+
+\[
+    X, \, Y \text{ unabhängig} \implies \text{Cov}(X, \, Y) = 0.
+\]
+
+\textbf{Achtung:} Die umgekehrte Implikation ist falsch!
+
+\section{Gemeinsame Verteilungen}
+
+\subsection{Gemeinsame diskrete Verteilungen}
+
+\subsubsection{Definition}
+
+\textbf{Def:} Seien $X_1,..., \, X_n$ $n$ diskrete Zufallsvariablen, sei $W_i \subset \mathbb{R}$ endlich oder abzählbar, wobei $X_i \in W_i$ fast sicher gilt. Die gemeinsame Verteilung von $(X_1,..., \, X_n)$ ist eine Familie $p = (p(x_1,..., \, x_n))_{x_1 \in W_1,..., \, x_n \in W_n}$, wobei jedes Mitglied definiert ist durch:
+
+\[
+    p(x_1,..., \, x_n) = \mathbb{P}[X_1 = x_1,..., \, X_n = x_n].
+\]
+
+\begin{ebox}
+    \textbf{Beispiel:} Seien $X, \, Y$ zwei unabhängige Bernoulli Z.V. mit Parameter $1/2$. Die gemeinsame Verteilung von $(X, \, Y)$ ist gegeben durch
+    \[\forall x, y \in \{0, \, 1\} \quad p(x,\,y) = \frac{1}{4}.\]
+
+    Die gemeinsame Verteilung von $(X, \, X)$ ist gegeben durch
+    \[\forall x,y \in \{0, \, 1\} \quad p(x, \, y) = \begin{cases}
+        \frac{1}{2}, &x = y\\ 0, &x \neq y.
+    \end{cases}\]
+\end{ebox}
+
+\begin{cbox}
+    \textbf{Satz:} Eine gemeinsame Verteilung von Z.V. $X_1,..., \, X_n$ erfüllt
+    \[
+        \sum_{x_1 \in W_1,..., \, x_n \in W_n} p(x_1,..., \, x_n) = 1.
+    \]
+\end{cbox}
+
+\textbf{Bemerkung:} Man kann auch \textbf{Gewichtsfunktion} anstatt Verteilung sagen.
+
+\end{document}
