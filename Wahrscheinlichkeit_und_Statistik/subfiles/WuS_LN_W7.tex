@@ -41,6 +41,17 @@ boxrule=0pt,arc=0pt,boxsep=2pt,left=2pt,right=2pt,leftrule=2pt}
 
 \maketitle
 
+\subsubsection{Randverteilung}
+
+Unter Kenntnis der Verteilung von $X_1,..., \, X_n$ kann man die Verteilung der einzelnen $X_i$ separat ermitteln. In diesem Zusammenhang wird die Verteilung von $X_i$ als $i$-te \textbf{Randverteilung} bezeichnet.
+
+\begin{cbox}
+    \textbf{Satz:} Seien $X_1,..., \, X_n$ diskrete Z.V. mit gemeinsamer Verteilung $p = (p(x_1,..., \, x_n))_{x_i \in W_1,..., \, x_m \in W_n}$. Für jedes $i$ gilt:
+    \[
+        \forall z \in W_i \quad \mathbb{P}[X_i = z] = \sum_{x_1,..., \, x_{i-1}, \, x_{i + 1},..., \, x_n} p(x_1,..., \, x_{i-1}, \, z, \, x_{i+1},..., \, x_n).
+    \]
+\end{cbox}
+
 \subsubsection{Unabhängigkeit}
 
 \begin{cbox}
@@ -82,5 +93,58 @@ für jedes $a_1,..., \, a_n \in \mathbb{R}$ gilt. Obige Abbildung $f$ nennen wir
     \]
     berechnen (solange das Integral wohldefiniert ist).
 \end{cbox}
+
+\begin{ebox}
+    \textbf{Beispiel:} Betrachten wir das Paar $(X, \, Y)$ analog zum obigen Beispiel. Falls wir die Funktion $\phi(x, \, y) = \mathbbm{1}_{(x, \, y) \in R}$ betrachten, gilt für jedes Rechteck $R = (a, \, a') \times (b, \, b') \subseteq [0, \, 1]^2$:
+    \[
+        \mathbb{P}[(X, \, Y) \in R] = \mathbb{E}[\phi(X, \, Y)] = \int_a^{a'} \int_b^{b'} dxdy = (a'-a)(b'-b) = \text{Flaeche}(R).
+    \]
+\end{ebox}
+
+\subsubsection{Randverteilungen}
+
+Falls $X. \, Y$ eine gemeinsame Dichte $f_{X, \, Y}$ besitzt, dann gilt
+\begin{align*}
+    \mathbb{P}[X \leq a] &= \mathbb{P}[X \in [- \infty, \, a], \, Y \in [- \infty, \, \infty]]\\ &= \int_{- \infty}^a \Big(\int_{- \infty}^{\infty} f(x, \, y)\,dy \Big)dx.
+\end{align*}
+Somit is $X$ stetig mit folgender Dichte:
+\[
+    f_X(x) = \int_{- \infty}^{\infty} f(x, \, y) \, dy.
+\]
+Analog ist $Y$ stetig mit folgender Dichte:
+\[
+    f_Y(y) = \int_{- \infty}^{\infty} f(x, \, y) \, dx.
+\]
+
+\textbf{Bemerkung:} Folgende Implikationen gelten:
+\[
+    X, \, Y \text{ diskrete Z.V.} \iff X, \, Y \text{ gemeinsame diskrete Z.V.}
+\]
+\[
+    X, \, Y \text{ gemeinsam stetig} \implies X \text{ stetig und } Y \text{ stetig}.
+\]
+
+\begin{ebox}
+    \textbf{Beispiel:} Schauen wir uns die Gleichverteilung eines Punktes auf einem Quadrat an. Unter gemeinsamer Dichte $f_{X,Y}(x, \, y) = \mathbbm{1}_{0 \leq x,y \leq 1}$ hat $X$ folgende Dichte:
+    \[
+        f_X(x) = \int_0^1 \mathbbm{1}_{0 \leq x \leq 1} \mathbbm{1}_{0 \leq y \leq 1} \, dy = \mathbbm{1}_{0 \leq x \leq 1}.
+    \]
+    Analog ist $f_Y(y) = \mathbbm{1}_{0 \leq y \leq 1}$. Somit sind sowohl $X$ als auch $Y$ gleichverteilte Zufallsvariablen auf $[0, \, 1]$ ($\mathcal{U} \sim [0, \, 1]$).
+\end{ebox}
+
+\subsubsection{Unabhängigkeit stetiger Zufallsvariablen}
+
+\begin{tbox}
+    \textbf{Theorem:} Seien $X_1,..., \, X_n$ Z.V. mit Dichten $f_1,..., \, f_n$. Dann sind folgende Aussagen äquivalent:
+    \begin{enumerate}
+        \item $X_1,..., \, X_n$ sind unabhängig,
+        \item $X_1,..., \, X_n$ sind insgesamt stetig mit gemeinsamer Dichte.
+    \end{enumerate}
+    \[
+        f(x_1,..., \, x_n) = f_1(x_1) \cdots f_n(x_n)
+    \]
+\end{tbox}
+
+\textbf{Bemerkung:} Somit sind zwei unabhängige stetige Z.V. automatisch gemeinsam stetig.
 
 \end{document}
