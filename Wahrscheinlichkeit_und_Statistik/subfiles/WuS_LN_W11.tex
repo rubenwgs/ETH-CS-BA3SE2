@@ -1,0 +1,58 @@
+\documentclass[a4paper]{extarticle}
+\usepackage[utf8]{inputenc}
+\usepackage[a4paper, margin=1in]{geometry}
+
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{enumitem}
+\usepackage{tcolorbox}
+\usepackage{fancyhdr}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{bbm}
+
+\setlength{\parindent}{0em}
+\setlength{\parskip}{0.4em}
+
+\definecolor{theoremblue}{RGB}{1, 73, 124}
+\definecolor{corollaryblue}{RGB}{70, 143, 175}
+\definecolor{exampleblue}{RGB}{137, 194, 217}
+
+\newtcolorbox{tbox}{colback=theoremblue!20,colframe=theoremblue,
+boxrule=0pt,arc=0pt,boxsep=2pt,left=2pt,right=2pt,leftrule=2pt}
+
+\newtcolorbox{cbox}{colback=corollaryblue!20,colframe=corollaryblue,
+boxrule=0pt,arc=0pt,boxsep=2pt,left=2pt,right=2pt,leftrule=2pt}
+
+\newtcolorbox{ebox}{colback=exampleblue!20,colframe=exampleblue,
+boxrule=0pt,arc=0pt,boxsep=2pt,left=2pt,right=2pt,leftrule=2pt}
+
+\title{WuS - Lecture Notes Week 11}
+\author{Ruben Schenk, ruben.schenk@inf.ethz.ch}
+\date{\today}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{ruben.schenk@inf.ethz.ch}
+\rfoot{Page \thepage}
+\lhead{WuS - Lecture Notes Week 11}
+
+\begin{document}
+
+\maketitle
+
+\section{Konfidenzintervalle}
+
+Die Grundidee ist wie folgt: Wie im vorigen Abschnitt suchen wir aus einer Familie $(\mathbb{P}_{\theta})_{\theta \in \Theta}$ von Modellen eines, das zu unseren Daten $x_1,..., \, x_n$ passt. Ein Schätzer für $\theta$ gibt uns dabei einen einzelnen zufälligen möglichen Parameterwert. Weil es schwirig ist, mit diesem einen Wert den richtigen Parameter zu treffen, suchen wir nun stattdessen eine \textbf{zufällige Teilmenge des Parameterbereichs,} die hoffentlich den wahren Parameter enthält.
+
+\subsection{Definitionen}
+
+Eir reichhaltig sind diese Schätzer? Werfen wir zum Beispiel eine Münze 100 mal, ohne die Wahrscheinlichkeit $p$ von Kopf zu kennen. Falls wir 70 mal Kopf erhalten, ist der Maximum-Likelihood-Schätzer für $p$ $T_{ML} = 0.7$. Wie weit ligt $T_{ML}$ von dem wahren Wert $p$ entfernt? Um diese Art von Fragen zu beantworten, führen wir den Begriff der Konfidenzintervalle ein.
+
+\textbf{Def:} Sei $\alpha \in [0, \, 1]$. Ein \textbf{Konfidenzintervall für} $\theta$ \textbf{mit Niveau} $1 - \alpha$ ist ein Zufallsintervall $I = [A, \, B]$, sodass gilt
+\[
+    \forall \theta \in \Theta \quad \mathbb{P}_{\theta}[A \leq \theta \leq B] \geq 1 - \alpha,
+\]
+wobei $A, \, B$ Zufallsvariablen der Form $A = a(X_1,..., \, X_n)$, $B = b(X_1,..., \, X_n)$ mittels $a,b : \mathbb{R}^n \to \mathbb{R}$ sind.
+
+\end{document}
