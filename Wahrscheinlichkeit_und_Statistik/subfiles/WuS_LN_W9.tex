@@ -1,0 +1,109 @@
+\documentclass[a4paper]{extarticle}
+\usepackage[utf8]{inputenc}
+\usepackage[a4paper, margin=1in]{geometry}
+
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{enumitem}
+\usepackage{tcolorbox}
+\usepackage{fancyhdr}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{bbm}
+
+\setlength{\parindent}{0em}
+\setlength{\parskip}{0.4em}
+
+\definecolor{theoremblue}{RGB}{1, 73, 124}
+\definecolor{corollaryblue}{RGB}{70, 143, 175}
+\definecolor{exampleblue}{RGB}{137, 194, 217}
+
+\newtcolorbox{tbox}{colback=theoremblue!20,colframe=theoremblue,
+boxrule=0pt,arc=0pt,boxsep=2pt,left=2pt,right=2pt,leftrule=2pt}
+
+\newtcolorbox{cbox}{colback=corollaryblue!20,colframe=corollaryblue,
+boxrule=0pt,arc=0pt,boxsep=2pt,left=2pt,right=2pt,leftrule=2pt}
+
+\newtcolorbox{ebox}{colback=exampleblue!20,colframe=exampleblue,
+boxrule=0pt,arc=0pt,boxsep=2pt,left=2pt,right=2pt,leftrule=2pt}
+
+\title{WuS - Lecture Notes Week 9}
+\author{Ruben Schenk, ruben.schenk@inf.ethz.ch}
+\date{\today}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{ruben.schenk@inf.ethz.ch}
+\rfoot{Page \thepage}
+\lhead{WuS - Lecture Notes Week 9}
+
+\begin{document}
+
+\maketitle
+
+\section{Statistische Grundideen}
+
+Wir befassen uns im Folgenden mit der \textbf{induktiven Statistik.} Die Grundidee dabei ist wie folgt: Man fasst die Daten $x_1,..., \, x_n$ auf als Realisierung / realisierte Werte $X_1(\omega),..., \, X_n(\omega)$ von Z.V. $X_1,..., \, X_n$, und sucht dann Aussagen über die Verteilung von $X_1,..., \, X_n$.
+
+\textbf{Wichtig:} Man muss immer sauber unterscheiden zwischen den \textit{Daten} $x_1,..., \, xn$ und dem generierenden Mechanismus $X_1,..., \, X_n$ (bezeichnet mit grossen Buchstaben, sind Z.V., also Funktionen auf einem $\Omega$).
+
+\textbf{Terminologie:} Die Gesamtheit der Beobachtungen $x_1,..., \, x_n$ oder Z.V. $X_1,..., \, X_n$ nennt man of eine \textbf{Stichprobe}, die Anzahl $n$ heisst dann der \textbf{Stichprobenumfang.}
+
+\section{Schätzer}
+
+Setup:
+\begin{itemize}
+    \item Parameterraum $\Theta \subset \mathbb{R}$
+    \item Grundraum $\Omega$
+    \item sigma-Algebra $\mathcal{F}$
+    \item $(\mathbb{P}_{\theta})_{\theta \in \Theta}$ Familie von Wahrscheinlichkeitsmasse auf $(\Omega, \, \mathcal{F})$
+    \item $X_1,..., \, X_n$ Zufallsvariablen auf $(\Omega, \, \mathcal{F})$
+\end{itemize}
+
+\subsection{Grundbegriffe}
+
+Wir suchen für den Parameter $\theta$ einen Schätzer $T$ aufgrund unserer Stichprobe $(X_1,..., \, X_n)$.
+
+\textbf{Def:} Ein \textbf{Schätzer} ist eine Zufallsvariable $T : \Omega \to \mathbb{R}$ der Form
+\[
+    T = t(X_1,..., \, X_n),
+\]
+wobei $t : \mathbb{R}^n \to \mathbb{R}$.
+
+Einsetzen von Daten $x_i = X_i(\omega), \, i = 1,..., \, n$ liefert dann \textbf{Schätzwerte} $T(\omega) = t(x_1,..., \, x_n)$ für $\theta$.
+
+\begin{ebox}
+    \textbf{Beispiel:} Jemand behauptet zu schmecken, ob in einer Tasse Tee zuerst die Milch oder der Tee eingegossen worden ist. Wie kann man überprüfen, ob das stimmen kann?
+
+    Wie geben der Person an $n$ Tagen je zwei Tassen, von welchen Sie sagen soll, in welcher zuerst die Milch und in welcher zuerst der Tee eingegossen wurde. Wir notieren uns dabei die Ergebnisse $x_1,..., \, x_n \in \{0, \, 1\}$ und fassen wie üblich diese Daten als Realisation von Z.V. $X_1,..., \, X_n$ auf. Dann ist $S_n = \sum_{i = 1}^n X_i$ die zufällige Anzahl der korrekt klassifizierten Tassenpaare, und $s_n = \sum_{i = 1}^n x_i$ die beobachtete Anzahl von Erfolgen.
+
+    Als Modell nehmen wir nun an, dass die $X_i$ unter $\mathbb{P}_{\theta}$ i.i.d. $\sim \text{Ber}(\theta)$ mit $\theta \in \Theta = [0, \, 1]$ sind. Dann ist natürlich $S_n \sim \text{Bin}(n, \, \theta)$ unter $\mathbb{P}_{\theta}$, d.h. im Modell $\mathbb{P}_{\theta}$, das zu $\theta$ gehört, ist die Anzahl $S_n$ der Erfolge binomialverteilt mit Parametern $n$ und $\theta$.
+
+    Weil wir den Parameter $\theta$ nicht kennen, liegt es nahe, zuerst einmal dafür einen Schätzer zu suchen. Eine erste Möglichkeit wäre, einfach das letzte Ergebnis zu nehmen. Unser erster Schätzer $\hat{T}$ für $\theta$ wäre also $\hat{T} = X_n$. Ein zweiter naheliegender Schätzer wäre die durchschnittliche Anzahl der Erfolge bei den $n$ Versuchen. Unser zweiter Schätzer wäre also $T = \bar{X_n} = \frac{1}{n}S_n$. Für gegebene Daten $x_1,..., \, x_n$ gibt uns das dann zwei Schätzwerte $\hat{t}(x_1,..., \, x_n) = x_n$ und $t(x_1,..., \, x_n) = \bar{x_n} = \frac{1}{n}\sum_{i = 1}^nx_i$, die wir konkret berechnen können.
+\end{ebox}
+
+\subsection{Bias}
+
+\textbf{Def:} Ein Schätzer $T$ heiss \textbf{erwartungstreu (unbiased)} für $\theta$, falls für alle $\theta \in \Theta$ gilt:
+\[
+    \mathbb{E}_{\theta}[T] = \theta
+\]
+
+Die Interpretation dazu ist wie folgt: Im Mittel (über alle denkbaren Realisationen $\omega$) schätzt $T$ also richtig, und zwar unabhängig davon, welches Modell $\mathbb{P}_{\theta}$ zu Grunde liegt.
+
+\textbf{Def:} Sei $\theta \in \Theta$ und $T$ ein Schätzer. Der \textbf{Bias} (oder erwartete Schätzfehler) von $T$ im Modell $\mathbb{P}_{\theta}$ ist definiert als
+\[
+    \mathbb{E}_{\theta}[T] - \theta.
+\]
+Der mittlere quadratische Schätzfehler (mean squared error, MSE) von $T$ im Modell $\mathbb{P}_{\theta}$ ist definiert als
+\[
+    \text{MSE}_{\theta}[T] := \mathbb{E}_{\theta}[(T - \theta)^2].
+\]
+
+\textbf{Bemerkung:} Mann kann den MSE zerlegen als
+\[
+    \text{MSE}_{\theta}[T] = \mathbb{E}_{\theta}[(T - \theta)^2] = \text{Var}_{\theta}[T] + (\mathbb{E}_{\theta}[T] - \theta)^2,
+\]
+also in die Summe aus der Varianz des Schätzers $T$ un dem Quadrat des Bias.
+
+\end{document}

@@ -43,4 +43,111 @@ boxrule=0pt,arc=0pt,boxsep=2pt,left=2pt,right=2pt,leftrule=2pt}
 
 \section{Grenzwertsätze}
 
+\textbf{Vorbemerkung:} In diesem Kapitel fixieren wir einen Wahrscheinlichkeitsraum $(\Omega, \, \mathcal{F}, \, \mathbb{P})$ und eine Folge von u.i.v.-Z.V. $X_1, \, X_2,...$. Mit anderen Worten, wir erhalten Z.V. $X_i : \Omega \to \mathbb{R}$, so dass
+\[
+    \forall i_1 < \cdots i_k, \, \forall x_1,..., \, x_k \in \mathbb{R} \quad \mathbb{P}[X_{i_1} \leq x_1,..., \, X_{i_k} \leq x_k] = F(x_1) \cdots F(x_k).
+\]
+wobei $F$ die allgemeine Verteilungsfunktion ist. Für jedes $n$ betrachen wir die Partialsumme
+\[
+    S_n = X_1 + \cdots + X_n,
+\]
+und wir interessieren uns für das Verhalten (wenn $n$ gros ist) der folgenden Z.V.
+\[
+    \frac{S_n}{n} = \frac{X_1 + \cdots + X_n}{n}.
+\]
+Das wird manchmal auch der \textbf{empirische Durchschnitt} genannt.
+
+\subsection{Gesetz der grossen Zahlen (GGZ)}
+
+\begin{tbox}
+    \textbf{Theorem:} Sei $\mathbb{E}[|X_1|] < \infty$. Setze $m = \mathbb{E}[X_1]$, dann gilt
+    \[
+        \lim_{n \to \infty} \frac{X_1 + \cdots X_n}{n} = m \quad f.s.
+    \]
+\end{tbox}
+
+\textbf{Bemerkung:} Da die Z.V. u.i.v. sind, haben wir ebenfalls $\mathbb{E}[|X_i|] < \infty$ und $m = \mathbb{E}[X_i]$ für jedes $i$.
+
+\begin{ebox}
+    \textbf{Beispiele:} Sei $X_1, \, X_2,...$ eine Folge von u.i.v. Bernoulli Z.V. mit Parameter $p$. Dann ist
+    \[
+        \lim_{n \to \infty} \frac{X_1 + \cdots + X_n}{n} = p \quad f.s.
+    \]
+
+    Sei $T_1, \, T_2,...$ eine u.i.v. Folge von exponential verteilten Z.V. mit Parameter $\lambda$. Dann gilt
+    \[
+        \lim_{n \to \infty} \frac{T_1 + \cdots + T_n}{n} = \frac{1}{\lambda} \quad f.s.
+    \]
+\end{ebox}
+
+\subsection{Anwendung: Monte-Carlo Integration}
+
+Unser Ziel ist es folgendes Integral
+\[
+    I = \int_0^1 g(x) \, dx
+\]
+nummerisch zu bestimmen. Die Idee: Wir betrachten $I$ als Erwartungswert und verwenden das GGZ um $I$ zu approximieren. Sei $U$ eine gleichverteilte Z.V. auf $[0, \, 1]$. Dann gilt
+\[
+    \mathbb{E}[g(U)] = \int_0^1 g(x) \, dx = I.
+\]
+Somit finden wir eine gute Approximation von $I$, falls wir obigen Erwartungswert $g(U)$ zufriedenstellen bestimmen können. Nun kommt das GGz ins Spiel. Sei $U_1, \, U_2,...$ eine u.i.v. Folge von gleichverteilten Z.V. auf $[0,\, 1]$ und setze $X_ = g(U_n)$ für jedes $n$. Somit sind die Folgenglieder $X_1, \, X_2,...$ u.i.v. und es gilt
+\[
+    \mathbb{E}[|X_1|] = \int_0^1 |g(x)| \, dx > \infty,
+\]
+und $\mathbb{E}[X_1] = I$. Anwendung des GGZ liefert
+\[
+    \lim_{n \to \infty} \frac{g(U_1) + \cdots g(U_n)}{n} = I.
+\]
+Somit erhalten wir eine Approximation von $I$.
+
+\subsection{Konvergenz in Verteilung}
+
+\textbf{Def:} Seien $(X_n)_{n \in \mathbb{N}}$ und $X$ Z.V. Wir schreiben
+\[
+    X_n \stackrel{Approx}{\approx} X \text{ as } n \to \infty
+\]
+falls für jedes $x \in \mathbb{R}$
+\[
+    \lim_{n \to \infty} \mathbb{P}[X_n \leq x] = \mathbb{P}[X \leq x].
+\]
+
+\subsection{Zentraler Grenzwertsatz}
+
+\subsubsection{Ein Frage der Fluktuation?}
+
+Das GGZ besagt, dass für grosse $n$ der empirische Durchschnitt nahe dem Erwartungswert $m = \mathbb{E}[X_1]$ ist. Eine zweite Frage, die man stellen kann, ist:
+\[
+    \text{Wie weit ist } \frac{X_1 + \cdots + X_n}{n} \text{ typischerweise von } m \text{ entfernt?}
+\]
+
+\subsubsection{Fluktuation von Normalverteilten Z.V.}
+
+Betrachten wir zuerst den Fall, dass $X_1, \, X_2,...$ eine Folge von i.i.d. normalen Z.V. mit den Parametern $m$ und $\sigma^2$ ist. Dann sagen uns die Ergebnisse, die wir für normale Z.V. gesehen haben, dass
+\[
+    Z = \frac{X_1 + \cdots + X_n}{n} - m
+\]
+wiederum eine normale Z.V. mit Parametern $\bar{m} = 0$ und $\bar{\sigma}^2 = \frac{1}{n}\sigma^2$ ist. Die Standardabweichung $\bar{\sigma} = \frac{1}{\sqrt{n}} \sigma$ stellt die typischen Schwankungen von $Z$ dar. Grobn kann man sage, dass der typische Abstand zwischen $\frac{X_1 + \cdots + X_n}{n}$ und $m$ von der Ordnung $\frac{\sigma}{\sqrt{n}}$ ist.
+
+\subsubsection{Der zentrale Grenzwertsatz (ZGWS)}
+
+Seien $X_1, \, X2,...$ nicht normalverteilt. Dann ist die Brechnung der Verteilung
+\[
+    \frac{X_1 + \cdots + X_n - n \cdot m}{\sqrt{\sigma^2n}}
+\]
+nicht immer einfacht. Hier setzt der ZGWS gerade an. Er besagt, dass für immer grösser werdende $n$ die Verteilung der obigen Z.V. sich der Verteilung einer standard normalverteilten Z.V. annähert.
+
+\begin{tbox}
+    \textbf{Theorem (ZGWS):} Nehme an, dass der Erwartungswert $\mathbb{E}[X_1^2]$ wohldefineirt und endlich ist. Setze $m = \mathbb{E}[X_1]$ und $\sigma^2 = \text{Var}(X_1)$, dann gilt folgender Grenzwert
+    \[
+        \mathbb{P}\Big[\frac{S_n - n \cdot m}{\sqrt{\sigma^2n}} \leq a\Big] \to_{n \to \infty} \Phi(a) = \frac{1}{\sqrt{2 \pi}} \int_{- \infty}^a e^{-x^2 / 2} \, dx
+    \]
+    für jedes $a \in \mathbb{R}$.
+\end{tbox}
+
+Beachte gerade, dass $\Phi$ gerade die Verteilungsfunktion einer Z.V. $Z \sim \mathcal{N}(0, \, 1)$ ist. Der Satz besagt somit, dass für grosse $n \in \mathbb{N}$ die Z.V.
+\[
+    Z_n = \frac{S_n - n \cdot m}{\sqrt{\sigma^2n}}
+\]
+einer Verteilung $Z \sim \mathcal{N}(0, \, 1)$ ähnelt.
+
 \end{document}
