@@ -41,4 +41,101 @@ boxrule=0pt,arc=0pt,boxsep=2pt,left=2pt,right=2pt,leftrule=2pt}
 
 \maketitle
 
+\subsection{Approximative Konfidenzintervalle}
+
+Einen allgemeinen \textbf{approximativen Zugang} liefert der zentralge Grenzwertsatz. Oft ist ein Schätzer $T$ eine Funktion einer Summe $\sum_{i = 1}^n Y_i$, wobei die $Y_i$ im Modell $\mathbb{P}_{\theta}$ i.i.d. sind. Das einfachste Beispiel ist $T = \bar{Y_n} = \frac{1}{n}\sum_{i = 1}^n Y_i$. Nach dem zentralen Grenzwertsatz ist dann für grosse $n$
+\[
+    \sum_{i = 1}^n Y_i \quad \text{approximativ normalverteilt unter } \mathbb{P}_{\theta}
+\]
+mit Parametern $\mu = n \cdot \mathbb{E}_{\theta}[Y_i]$ und $\sigma^2 = n \cdot \text{Var}_{\theta}[Y_i]$. Das kann man benutzen, um für die Verteilung von $T$ approximative Aussagen zu bekommen und damit gewisse Fragen zumindest approximativ zu beantworten.
+
+\section{Tests}
+
+\textbf{Tagesproblem:} Sophie ist Statistikstudentin und Velokurier. Sie hat eine Lieferung mit einem Beutel fairer Münzen ($p = 0.5$) und einem Beutel gezinkter Münzen ($p = 0.7$). Die fairen Münzen sollen ins Casion, die gezinkten sollen entsorgt werden. Bei einem Velounfall werden alle Münzen vermischt. Wie kann Sopie entscheiden, welche Münzen ins Casion sollen, und welche entsorgt werden (ohne jede Münzen 10'000 Mal zu werfen)?
+
+\subsection{Null- und Alternativhypothese}
+
+Ausgangspunkt ist wieder eine Stichprobe $X_1,..., \, X_n$. Wir betrachten wieder eine Familie von Wahrscheinlichkeiten $\mathbb{P}_{\theta}$ mit $\theta \in \Theta$, die unsere möglichen Modelle beschreiben. Wie bisher kann $\theta$ eine ein- oder mehrdimensionaler Parameter sein.
+
+Das Grundproblem ist, eine Entscheidung zwischen zwei konkurrierenden Modellklassen zu treffen -- der \textbf{Nullhypothese} $\Theta_0 \subseteq \Theta$ und der \textbf{Alternativhypothese} $\Theta_A \subseteq \Theta$, wobei $\Theta_0 \cap \Theta_A = \emptyset$. Meist schreibt man das als
+\begin{align*}
+    \text{Nullhypothese } &H_0 : \theta \in \Theta_0,\\
+    \text{Alternativhypothese } &H_A : \theta \in \Theta_A.
+\end{align*}
+
+Ist keine explizite Alternative spezifiziert, so hat man $\Theta_A = \Theta_0^C = \Theta \setminus \Theta_0$. Null- und/oder Alternativhypothese heissen \textbf{einfach,} falls $\Theta_0$ bzw. $\Theta_A$ aus einem einzelnen Wert, $\theta_0$ bzw. $\theta_A$, bestehen. Sonst heissen sie \textbf{zusammengesetzt.}
+
+\begin{ebox}
+    \textbf{Beispiel:} In unserem Tagesproblem sind also:
+    \begin{align*}
+        H_0 &: \theta = 0.7 \quad (\theta \in \Theta_0 = \{0.7\})\\
+        H_A &: \theta = 0.5 \quad (\theta \in \Theta_A = \{0.5\})
+    \end{align*}
+\end{ebox}
+
+\subsection{Test und Entscheidung}
+
+\textbf{Def:} Ein \textbf{Test} ist ein Paar $(T, \, K)$, wobei
+\begin{itemize}
+    \item $T$ eine Z.V. der Form $T = t(X_1,..., \, X_n)$ ist, und
+    \item $K \subseteq \mathbb{R}$ eine (deterministische) Teilmenge von $\mathbb{R}$ ist.
+\end{itemize}
+Die Z.V. $T = t(X_1,..., \, X_n)$ heisst dann \textbf{Teststatistik,} und $K$ heisst \textbf{kritischer Bereich} oder \textbf{Verwerfungsbereich.}
+
+\textbf{Def:} Die \textbf{Entscheidungsregel} ist wie folgt:
+\begin{itemize}
+    \item die Hypothese $H_0$ wird verworfen, falls $T(\omega) \in K$,
+    \item die Hypothese $H_A$ wird nicht verworfen, bzw. angenommen, falls $T(\omega) \notin K$.
+\end{itemize}
+
+Die Entscheidung bei einem Test kann auf zwei verschiedene Arten falsch herauskommen:
+\begin{enumerate}
+    \item Bei einem \textbf{Fehlert 1. Art} wir die Nullhypothese zu Unrecht verworfen, d.h. obwohl sie richtig ist. Das passiert für $\theta \in \Theta_0$ und $T \in K$, deshalb heisst $\mathbb{P}_{\theta}[T \in K]$ für $\theta \in \Theta_0$ die Wahrscheinlichkeit für einen Fehler 1. Art.
+    \item Bei einem \textbf{Fehler 2. Art} wird die Nullhypothese zu Unrecht nicht verworfen, d.h. man akzeptiert die Nullhypothese, obwohl sie falsch ist. Das passiert für $\theta \in \Theta_A$ und $T \notin K$, und deshalb heisst $\mathbb{P}_{\theta}[T \notin K] = 1 - \mathbb{P}_{\theta}[T \in K]$ für $\theta \in \Theta_A$ die Wahrscheinlichkeit für einen Fehler 2. Art.
+\end{enumerate}
+
+\begin{ebox}
+    \textbf{Beispiel:} In unserem Tagesproblem ist:
+    \begin{itemize}
+        \item Fehler 1. Art: Sophie bringt eine gezinkte Münze ins Casino.
+        \item Fehler 2. Art: Sophie entsorgt eine faire Münze.
+    \end{itemize}
+\end{ebox}
+
+\subsection{Signifikanzniveau und Macht}
+
+\textbf{Def:} (Fehler 1. Art vermeiden) Sei $\alpha \in (0, \, 1)$. Ein Test $(T, \, K)$ besitzt \textbf{Signifikanzniveau} $\alpha$, falls
+\[
+    \forall \theta \in \Theta_0 \quad \mathbb{P}_{\theta}[T \in K] \leq \alpha.
+\]
+
+\textbf{Def:} (Fehler 2. Art vermeiden) Die \textbf{Macht} eines Tests $(T, \, K)$ wird definiert als folgende Funktion
+\[
+    \beta : \Theta_A \to [0, \, 1], \quad \theta \to \beta(\theta) := \mathbb{P}_{\theta}[T \in K].
+\]
+
+\textbf{Bemerkung:}
+\begin{itemize}
+    \item $\alpha$ \textit{klein} bedeuted, dass die Wahrscheinlichkeit eines Fehlers 1. Art klein ist
+    \item $\beta$ \textit{gross} bedeuted, dass die Wahrscheinlichkeit eines Fehlers 2. Art klein ist
+\end{itemize}
+
+Wir können das \textbf{asymmetrische Verhalten} zwischen Null- und Alternativhypothese anhand unseres Tagesproblems beobachten:
+
+\begin{ebox}
+    \textbf{Beispiel:} Betrachten wir nochmals unser Tagesproblem. Wir nehmen an, dass Sophie jede Münze $n = 10$ Mal wirft. $T = \sum_{i = 1}^{10} X_i$ ist die Anzahl der Kopf-Würfe und $K = (- \infty, \, j)$, wobei $j \in \{0, \, 1,..., \, 10\}$ fixiert wird.
+
+    \begin{table}[H]
+        \centering
+        \begin{tabular}{|l|l|l|}
+        \hline
+        $j$ & Signifikanzniveau $\alpha = \mathbb{P}_{0.7}[T \leq j]$ & Macht $\beta(0.5) = \mathbb{P}_{0.5}[T \leq j]$ \\ \hline
+        $4$ & $\approx 4.7 \%$ & $\approx 62.3 \%$ \\ \hline
+        $5$ & $\approx 15 \%$ & $\approx 37.7 \%$ \\ \hline
+        $6$ & $\approx 35 \%$ & $\approx 17.2 \%$ \\ \hline
+        $7$ & $\approx 62 \%$ & $\approx 5.5 \%$ \\ \hline
+        \end{tabular}
+    \end{table}
+\end{ebox}
+
 \end{document}
