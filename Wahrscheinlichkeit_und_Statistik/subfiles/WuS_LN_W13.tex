@@ -1,0 +1,139 @@
+\documentclass[a4paper]{extarticle}
+\usepackage[utf8]{inputenc}
+\usepackage[a4paper, margin=1in]{geometry}
+
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{enumitem}
+\usepackage{tcolorbox}
+\usepackage{fancyhdr}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{bbm}
+
+\setlength{\parindent}{0em}
+\setlength{\parskip}{0.4em}
+
+\definecolor{theoremblue}{RGB}{1, 73, 124}
+\definecolor{corollaryblue}{RGB}{70, 143, 175}
+\definecolor{exampleblue}{RGB}{137, 194, 217}
+
+\newtcolorbox{tbox}{colback=theoremblue!20,colframe=theoremblue,
+boxrule=0pt,arc=0pt,boxsep=2pt,left=2pt,right=2pt,leftrule=2pt}
+
+\newtcolorbox{cbox}{colback=corollaryblue!20,colframe=corollaryblue,
+boxrule=0pt,arc=0pt,boxsep=2pt,left=2pt,right=2pt,leftrule=2pt}
+
+\newtcolorbox{ebox}{colback=exampleblue!20,colframe=exampleblue,
+boxrule=0pt,arc=0pt,boxsep=2pt,left=2pt,right=2pt,leftrule=2pt}
+
+\title{WuS - Lecture Notes Week 13}
+\author{Ruben Schenk, ruben.schenk@inf.ethz.ch}
+\date{\today}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{ruben.schenk@inf.ethz.ch}
+\rfoot{Page \thepage}
+\lhead{WuS - Lecture Notes Week 13}
+
+\begin{document}
+
+\maketitle
+
+\subsection{Konstruktion von Tests}
+
+Seien $\theta_0 \neq \theta_A$ zwei fixierte Zahlen. In diesem Abschnitt nehmen wir stets an, dass sowohl die Nullhypothese als auch die Alternativhypothese von der einfachen From
+\begin{align*}
+    H_0 &: \theta = \theta_0,\\
+    H_A &: \theta = \theta_A,
+\end{align*}
+ist. Ferner nehmen wir an, dass die Z.V. $X_1,..., \, X_n$ entweder diskret, oder gemeinsam stetig unter $\mathbb{P}_{\theta_0}$ und unter $\mathbb{P}_{\theta_A}$ sind.
+
+Die Grundidee ist wie folgt: Wir fixieren $\alpha$ (klein), da wir unbedingt den Fehler 1. Art klein halten wollen. Danach suchen wir einen Test, sodass $\beta$ möglichst gross ist.
+
+\textbf{Def:} Für jedes $x_1,..., \, x_n$ definieren wir den \textbf{Likelihood-Quotienten} durch
+\[
+    R(x_1,..., \, x_n) := \frac{L(x_1,..., \, x_n; \, \theta_A)}{L(x_1,..., \, x_n; \, \theta_0)}.
+\]
+Dabei ist $L(x_1,..., \, x_n; \, \theta)$ die Likelihood-Funktion und wir setzen als Konvention $R(x_1,..., \, x_n) = + \infty$, falls $L(x_1,..., \, x_n; \, \theta_0) = 0$.
+
+Es ligt somit nahe, als Teststatistik $T:=R(X_1,..., \, X_n)$ und als kritischen Bereich $K := (c, \, \infty)$ zu wählen, wenn man $\theta_0$ gegen $\theta_A$ testen will. Schliesslich wird gerade dann die Hypothese $H_0$ verworfen, falls der Quotient $R$ gross ist.
+
+\textbf{Def:} Sei $c \geq 0$. Der \textbf{Likelihood-Quotienten-Test (LQ-Test) mit Parameter} $c$ ist ein Test $(T, \, K)$, wobei Teststatistik und Verwerfungsbereich gegeben sind durch
+\[
+    T = R(X_1,..., \, X_n) \quad \text{ und } \quad K = (c, \, \infty).
+\]
+
+\begin{ebox}
+    \textbf{Beispiel:} Betrachten wir das Tagesbeispiel von letzter Woche. Seien $X_1,..., \, X_n \sim Ber(\theta)$. Zudem haben wir:
+    \begin{itemize}
+        \item $H_0 : \theta = 0.7$
+        \item $H_A : \theta = 0.5$
+    \end{itemize}
+    Für $X_i \sim Ber(\theta)$ gilt:
+    \[
+        L(x_1,..., \, x_n; \, \theta) = \mathbb{P}_{\theta}[X_1 = x_1,..., \, X_n = x_n] = \mathbb{P}[X_1 = x_1] \cdots \mathbb{P}[X_n = x_n] = \theta^{|X|}(1 - \theta)^{n - |X|},
+    \]
+    wobei $|X| = \sum_{i = 1}^n X_i$. In unserem Fall ist nun:
+    \[
+        R(x_1,..., \, x_n) = \Big(\frac{3}{7}\Big)^{|X|}\frac{1}{0.6^n}.
+    \]
+    Somit erhalten wir für $n = 10$ und $c = 1$
+    \begin{itemize}
+        \item $\alpha = 0.35$
+        \item $\beta = 0.82$
+    \end{itemize}
+    sowie für $c = 10$
+    \begin{itemize}
+        \item $\alpha = 0.0101$
+        \item $\beta = 0.1719$
+    \end{itemize}
+\end{ebox}
+
+\begin{tbox}
+    \textbf{Theorem (Neyman-Pearson-Lemma):} Sei $c \geq 0$. Sei $(T, \, K)$ ein Likelihood-Quotienten-Test mit Parameter $c$ und Signifikanzniveau $\alpha^* := \mathbb{P}_{\theta_0}[T > c]$. ist $(T', \, K')$ ein anderer Test mit Signifikanzniveau $\alpha \leq \alpha^*$, dann gilt
+    \[
+        P_{\theta_A}[T' \in K'] \leq \mathbb{P}_{\theta_A}[T \in K].
+    \]
+\end{tbox}
+
+\subsection{Beispiele}
+
+Betrachten wir folgendes Modell: $(\mathbb{P}_{\theta})_{\theta \in \mathbb{R}}$ und $X_1,..., \, X_n$ u.i.v. $\sim \mathcal{N}(\theta, \, 1)$ unter $\mathbb{P}_{\theta}$. Zudem gilt:
+\begin{itemize}
+    \item $H_0 : \theta = 0$
+    \item $H_A : \theta \neq 0$
+\end{itemize}
+
+Betrachten wir nun zwei verschiedene Tests:
+\begin{itemize}
+    \item Test 1: $T = \frac{X_1 + \cdots + X_n}{\sqrt{n}}$ und $K = (1.65, \, \infty)$
+    \item Test 2: $T = \frac{X_1 + \cdots + X_n}{\sqrt{n}}$ und $K = (2.33, \, \infty)$
+\end{itemize}
+
+Bemerkung: Unter $\mathbb{P}_0$ ist $T \sim \mathcal{N}(0, \, 1)$.
+
+Für die Signifikanz gilt:
+\begin{itemize}
+    \item Test 1: $\alpha = \mathbb{P}_{H_0}[H_0 \text{ verworfen}] = \mathbb{P}_{\theta = 0}[T > 1.65] = 5 \%$
+    \item Test 2: $\alpha = \mathbb{P}_{H_0}[H_0 \text{ verworfen}] = \mathbb{P}_{\theta = 0}[T > 2.33] = 1 \%$
+\end{itemize}
+
+Beobachten wir nun verschiedene Daten. Wir haben $T(\omega) = 2.967$. Dann wird $H_0$ sowohl für Test 1, sowie auch für Test 2 verworfen. Somit ist unsere Aussage viel kräftiger als wenn wir z.B. nur Test 1 betrachtet hätten.
+
+Für dieses Beispiel ist der \textbf{p-Wert} definiert als:
+\[
+    p\text{-Wert} := \mathbb{P}_0[T > 2.976] = 0.2\%.
+\]
+In anderen Worten gibt uns der $p$-Wert in diesem Fall das Signifikanzniveau vom "besten" Test, der $H_0$ verwirft.
+
+\subsection{$p$-Wert}
+
+\textbf{Def:} Sei $X_0 : \theta = \theta_0$ eine einfache Nullhypothese. Sei $(T, \, K_t)_{t \geq 0}$ eine geordnete Familie von Tests. Der $p$\textbf{-Wert} ist definiert alls die Z.V.
+\[
+    p\text{-Wert} = G(T),
+\]
+wobei $G : \mathbb{R}_+ \to [0, \, 1]$ mittels $G(t) = \mathbb{P}_{\theta_0}[T \in K_t]$ definiert ist.
+
+\end{document}
