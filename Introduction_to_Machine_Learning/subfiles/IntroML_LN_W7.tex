@@ -139,4 +139,146 @@ The idea behind \textbf{early stopping} is as follows: In general, we might not 
     \item Stop the training once the valdiation error stops to decrease
 \end{enumerate}
 
+The idea behind the \textbf{dropout} technique is to randomly ignore hidden units during each iteration of SGD with probability $p$:
+
+\begin{figure}[H]
+    \includegraphics[width=15cm]{../images/IntroML_Fig7-1}
+    \centering
+\end{figure}
+
+After the training, we use all units, but multiply the weights by $p$ to compensate.
+
+\begin{figure}[H]
+    \includegraphics[width=15cm]{../images/IntroML_Fig7-2}
+    \centering
+\end{figure}
+
+\subsection{Batch Normalization}
+
+In deep learning, inputs are shifted and scaled through each layer. \textbf{Batch normalization} is a widely used technique that normalizes unit activations in each layer according to mini-batch statistics:
+\begin{itemize}
+    \item Reduces internal covariate shift
+    \item Enables larger learning rates
+    \item Has regulatizing effect
+\end{itemize}
+This can be integrates as a layer into the neural network, with two learnable parameters $\beta, \, \gamma$ (per hidden unit) that can "learn to undo" the normalization (and also serve as bias nodes).
+
+This encourages standardization of unit activations not only for inputs, but also hidden units. Not only at initialization, but also during training.
+
+\begin{cbox}
+    \textbf{Algorithm:} Batch normalization layer
+    \begin{enumerate}
+        \item Input: Incoming activation values for all examples $v_i$ for all $i \in S$ in the minibatch $S$, $\epsilon > 0$
+        \item Learnable parameters: $\beta, \, \gamma$
+        \item Batch normalization computes $\bar{v} = BN(v; \, \gamma, \, \beta)$ by:
+        \begin{enumerate}
+            \item Compute the mini-batch mean: $\mu_S = \frac{1}{|S|} \sum_{i \in S}v_i$
+            \item Compute the mini-batch variance: $\sigma_S^2 = \frac{1}{|S|} \sum_{i \in S} (v_i - \mu_S)^2$
+            \item Normalize each point: $\hat{v}_i = \frac{v_i - \mu_s}{\sqrt{\sigma_S^2 + \epsilon}}$
+            \item Scale and shift: $\bar{v}_i = \gamma \hat{v}_i + \beta$
+        \end{enumerate}
+        \item Output: $\bar{v}_i$ for all $i \in S$ in the minibatch $S$
+    \end{enumerate}
+\end{cbox}
+
+\section{Convolutional Neural Networks}
+
+\subsection{Introduction}
+
+So far, we have only discussed fully connected neural networks. There exist, however, specialized archtiectures designed for certain classes of applciations, such as:
+\begin{itemize}
+    \item Convolutional neural networks
+    \item Residual networks and skip connections
+    \item Recurrent neural networks
+    \item Memory (LSTMs, GRUs,...)
+    \item etc.
+\end{itemize}
+
+Let us pose some invariances of predictions. Predictions should be unchanged under some transformations of the data, e.g.:¨
+\begin{itemize}
+    \item Classifications of handwritten digits should be undchanged under translation, rotation, scale, etc.
+    \item Speech recognition
+\end{itemize}
+
+How do we encourage a model to learn specific invariances?
+\begin{itemize}
+    \item Augmentation of the training set
+    \item Special regularization terms
+    \item Invariance built into pre-processing
+    \item Implement invariance into structure of ANN (e.g. using convolutional neural networks)
+\end{itemize}
+
+\subsection{Convolutions}
+
+\textbf{Convolutional neural networks} are ANNs for \textit{specialized applications} (e.g. image recognition). The hidden layers closest to the input layer \textit{share parameters:} Each hidden unit only depends on all closeby inputs (e.g. pixels), and weights constrained to be identical across all units on the layer. This reduces the number of parameters, and ecnourages robustness against small amounts of translation.
+
+\textbf{Remark:} The weights can still be optimized via backpropagation.
+
+Lets first consider convolutions in 1D. We can define this as follows: Given a row vector $w \in \mathbb{R}^k$ and a column $x \in \mathbb{R}^d$, then their \textbf{convolution} $z = w * x$ is defined by the vector $z \in \mathbb{R}^{d + k - 1}$ via
+\[
+    z_i = \sum_{j = \max(1, \, i - d + 1)}^{\min (i, \, k)} w_jx_{i-j+1}.
+\]
+This naturally generalizes to matrices $W$ to yield $z = W * x$.
+
+Lets also consider convolutions with 2D data (such as images). We summarize the approach in the following figure:
+
+\begin{figure}[H]
+    \includegraphics[width=15cm]{../images/IntroML_Fig7-3}
+    \centering
+\end{figure}
+
+If we compare those to fully connected layers, we see the following similarities:
+\begin{itemize}
+    \item Fully connected layers: $v^{l + 1} = \phi(Wv^l)$
+    \item Convolutional layers: $v^{l + 1} = \phi(W * v^l)$
+\end{itemize}
+
+We might also be interested in computing the \textit{output dimensions:}
+\begin{itemize}
+    \item Apply $m$ different $f \times f$ filters
+    \item To a $n \times n$ image
+    \item With PAdding $p$
+    \item And stride $s$
+\end{itemize}
+Then:
+\[
+    l = \frac{n + 2p - f}{s} + 1
+\]
+
+\subsection{CNN Architecture}
+
+Finally, this leaves us with the following architecture for CNNs:
+
+\begin{figure}[H]
+    \includegraphics[width=15cm]{../images/IntroML_Fig7-4}
+    \centering
+\end{figure}
+
+In some applications, it can make sense to \textbf{aggregate (pool)} several units to decrease the width of the network (and hence the number of parameters). Usually, one considers either the average or the maximum value. Example:
+
+\begin{figure}[H]
+    \includegraphics[width=13cm]{../images/IntroML_Fig7-5}
+    \centering
+\end{figure}
+
+\begin{figure}[H]
+    \includegraphics[width=15cm]{../images/IntroML_Fig7-6}
+    \centering
+\end{figure}
+
+\subsection{Residual Networks}
+
+\begin{figure}[H]
+    \includegraphics[width=9cm]{../images/IntroML_Fig7-7}
+    \centering
+\end{figure}
+
+The idea behind \textbf{residual connections} is as follows:
+\begin{enumerate}
+    \item Introduce skip connections that can allow to effectively train deeper networks
+    \item "Identity shortcut connection" helps to avoid vanishing gradients
+    \item This allows to effectively train networks with 1000+ layers
+    \item It's also possible to skip more than one layer (DenseNets)
+\end{enumerate}
+
 \end{document}
