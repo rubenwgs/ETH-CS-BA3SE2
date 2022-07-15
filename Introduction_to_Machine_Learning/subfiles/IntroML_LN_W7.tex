@@ -1,0 +1,142 @@
+\documentclass[a4paper]{extarticle}
+\usepackage[utf8]{inputenc}
+\usepackage[a4paper, margin=1in]{geometry}
+
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{enumitem}
+\usepackage{tcolorbox}
+\usepackage{fancyhdr}
+\usepackage{graphicx}
+\usepackage{float}
+
+\setlength{\parindent}{0em}
+\setlength{\parskip}{0.4em}
+
+\definecolor{theoremblue}{RGB}{1, 73, 124}
+\definecolor{corollaryblue}{RGB}{70, 143, 175}
+\definecolor{exampleblue}{RGB}{137, 194, 217}
+
+\newtcolorbox{tbox}{colback=theoremblue!20,colframe=theoremblue,
+boxrule=0pt,arc=0pt,boxsep=2pt,left=2pt,right=2pt,leftrule=2pt}
+
+\newtcolorbox{cbox}{colback=corollaryblue!20,colframe=corollaryblue,
+boxrule=0pt,arc=0pt,boxsep=2pt,left=2pt,right=2pt,leftrule=2pt}
+
+\newtcolorbox{ebox}{colback=exampleblue!20,colframe=exampleblue,
+boxrule=0pt,arc=0pt,boxsep=2pt,left=2pt,right=2pt,leftrule=2pt}
+
+\title{IntroML - Lecture Notes Week 7}
+\author{Ruben Schenk, ruben.schenk@inf.ethz.ch}
+\date{\today}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{ruben.schenk@inf.ethz.ch}
+\rfoot{Page \thepage}
+\lhead{IntroML - Lecture Notes Week 7}
+
+\begin{document}
+
+\maketitle
+
+\subsection{Stochastic Gradient Descent for ANNs}
+
+The \textbf{stochastic gradient descent} approach for ANNs looks as follows:
+
+\begin{cbox}
+    \textbf{Algorithm:} We want to solve
+    \[
+        W^* = \arg \min_{W} \sum_{i = 1}^n l(W; \, x_i, \, y_i)
+    \]
+    \begin{enumerate}
+        \item We initialize the weight $W$
+        \item For $t = 1, \, 2,...$:
+        \begin{itemize}
+            \item Pick data point $(x, \, y) \in D$ uniformly at random
+            \item Take step in \textit{negative gradient} direction
+            \[
+                W \leftarrow W - \eta \Delta_Wl(W; \, x, \, y)
+            \]
+        \end{itemize}
+    \end{enumerate}
+    Typically we use \textit{minibatches} to reduce variance/exploit parallelization.
+\end{cbox}
+
+But how do we optimize over weights? We want to do \textbf{empirical risk minimization,} i.e. jointly optimize over all weights for all layers to minimize loss over the training data. This is in general a \textit{non-convex} optimization problem! Nevertheless, we can still try to find a local optimum.
+
+\textbf{Remark:} There are \textbf{weight-space symmetries.} Multiple distinct weights can compute the same predictions. In other words, multiple local minima can be equivalent in terms of input-output mapping.
+
+Computing the gradient is done through backpropagation in matrix form:
+
+\begin{cbox}
+    \textbf{Algorithm:}
+    \begin{enumerate}
+        \item For the output layer
+        \begin{itemize}
+            \item Compute "error": $\delta^{(L)} = \Delta_fl$
+            \item Gradient: $\Delta_{W^{(L)}}l = \delta^{(L)}v^{(L-1)T}$
+        \end{itemize}
+        \item For each hidden layer $l = L - 1:-1:1$
+        \begin{itemize}
+            \item Compute "error": $\delta^{(l)} = \phi'(z^{(l)})\odot (W^{(l + 1)T}\delta^{(l+1)})$
+            \item Gradient: $\Delta_{W^{(l)}}l = \delta^{(l)}v^{(l-1)T}$
+        \end{itemize}
+    \end{enumerate}
+\end{cbox}
+
+\subsection{Weight Initialization in Neural Networks}
+
+Onr problem we might encounter are \textbf{vanishing} and \textbf{exploding gradients.} Remember the gradient computation in backpropagation was defined as:
+\[
+    \Delta_{W^{(i)}}l = \delta^{(i)}v^{(i - 1)T} \text{ where } \delta^{(i)} = \phi'(z^{(i)}) \odot (W^{(i + 1)T}\delta^{(i + 1)}) \text{ and } v^{(i)} = \phi(W^{(i)}v^{(i-1)})
+\]
+The potential issue is exploding ($||\Delta_{W^{(i)}}l|| \to \infty$) or vanishing ($||\Delta_{W^{(i)}}l|| \to 0$) gradients can cause optimization to fail. Why can this happen? Potential reasons are $||\delta^{(i)}||$ going to $0$ or $\infty$ (or analog. for $||v^{(i)}||$).
+\begin{itemize}
+    \item Using certain activation functions (e.g. ReLU) can help avoid $||\delta^{(i)}|| \to 0$.
+    \item The error signal $\delta^{(i)}$ is scaled by $v^{(i)}$. This can help to reduce the vanishing/exploding gradient problem by keeping the magnitude of $v^{(i)}$ constant across the layers.
+\end{itemize}
+
+The general goal when initializing weights is to keep the variance of weights approximately constant across layers to avoid vanishing and exploding gradients and network activations. Usually, \textbf{random initialization} works well, e.g.
+\begin{itemize}
+    \item Glorot ($\tanh$): $w_{i, \, j} \sim \mathcal{N}(\frac{1}{n_{in}})$ or $w_{i, \, j} \sim \mathcal{N}(\frac{2}{n_{in} + n_{out}})$
+    \item He (ReLU): $w_{i, \, j} \sim \mathcal{N}(\frac{2}{n_{in}})$
+\end{itemize}
+We need to ensure that at initialization, unit activations are approximately standardized.
+
+\subsection{Learning Rates}
+
+To implement the SGD update rule ($W \leftarrow W - \eta_t\Delta_Wl(W; \, x, \, y)$), we need to choose the learning rate $\eta_t$. In practice, we often use a decaying learning rate schedule, e.g. piecewise constant.
+
+We may want to monitor the ratio of weight change (gradient) to weight magnitude:
+\begin{itemize}
+    \item If it's too small, we increase the learning rate
+    \item If it's too large, we decrease the learning rate
+\end{itemize}
+
+\textbf{Learning with momentum} is a common extension to training with (stochastic) gradient descent. It can help to escape the local minima. The idea is as follows: We move not only into the direction of the gradient, but also in direction of the last weigh update. The updates then are:
+\begin{itemize}
+    \item $d \leftarrow m \cdot d + \eta_t\Delta_Wl(W; \, x, \, y)$
+    \item $W \leftarrow W - d$
+\end{itemize}
+In some cases, learning with momentum cad \textit{prevent oscillation.}
+
+\subsection{Recularization in Neural Networks}
+
+Neural networks have many parameters, so there's a potential danger of overfitting. Countermeasures are:
+\begin{itemize}
+    \item \textit{Regularization (weight decay):} Add penatly term to keep the weights small
+    \[
+        W^* = \arg \min_W \sum_{i = 1}^n l(W; \, x_i, \, y_i) + \lambda ||W||_2^2
+    \]
+    \item \textit{Early stopping:} Don't run SDG until convergence
+    \item \textit{"Dropout"}
+\end{itemize}
+
+The idea behind \textbf{early stopping} is as follows: In general, we might not want to run the training until the weights convergence since this potentially leads to overfitting. One posssibility is:
+\begin{enumerate}
+    \item Monitor the prediction perfomance on a validation set
+    \item Stop the training once the valdiation error stops to decrease
+\end{enumerate}
+
+\end{document}
