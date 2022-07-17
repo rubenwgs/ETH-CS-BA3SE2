@@ -169,6 +169,101 @@ In summary:
 
 \subsection{Kernel PCA}
 
+Recall that in supervised learning, kernels allowed us to solve non-linear problems by reducing them to linear ones in high-dimensional (implicitly represented) spaces. We can take the same approach for unsupervised learning!
+
+Recall that the optimal solution to PCA problem solves for
+
+\[
+    w^* = \arg \max_{||w||_2 = 1} w^TX^TXw = \arg \max_{||w||_2} \sum_{i = 1}^n (w^Tx_i)^2.
+\]
+
+Applying feature maps, using $w = \sum_{j = 1}^n \alpha_j \phi(x_j)$ and observing that $||w||_2^2 = \alpha^TK\alpha$:
+
+\begin{align*}
+    \arg \max_{||w||_2 = 1} \sum_{i = 1}^n &= \arg \max_{\alpha^TK\alpha = 1} \sum_{i = 1}^n \Big(\sum_{j = 1}^n \alpha_j \phi(x_j)^T \phi(x_i) \Big)^2\\
+    &= \arg \max_{\alpha^TK\alpha = 1} \sum_{i = 1}^n \Big(\sum_{j = 1}^n \alpha_j k(x_j, \, x_i) \Big)^2 \\
+    &= \arg \max_{\alpha^TK\alpha = 1} \sum_{i = 1}^n (\alpha^TK_i)^2\\
+    &= \arg \max_{\alpha^TK\alpha = 1} \alpha^TK^TK \alpha
+\end{align*}
+
+The \textbf{Kernel PCA} ($k = 1$) requires solving:
+
+\[
+    \alpha^* = \arg \max_{\alpha^Tk\alpha = 1} \alpha^TK^TK\alpha \equiv \arg \max_{\alpha} \frac{\alpha^TK^TK\alpha}{\alpha^TK\alpha}.
+\]
+
+The optimal solution is obtained in \textit{closed form} from the eigendecomposition of $K$:
+
+\[
+    \alpha^* = \frac{1}{\sqrt{\lambda_1}}v_1 \text{ for } K = \sum_{i = 1}^n \lambda_iv_iv_i^T \text{ and } \lambda_1 \geq \lambda_2 \geq \cdots \geq  \lambda_n \geq 0.
+\]
+
+For general $k \geq 1$, the \textbf{Kernel Principal Components} are given by $\alpha^{(1)},..., \, \alpha^{(k)} \in \mathbb{R}^n$, where
+
+\[
+    \alpha^{(i)} = \frac{1}{\sqrt{\lambda_i}}v_i
+\]
+
+is obtained from $K = \sum_{i = 1}^n \lambda_i v_i v_i^T$ and $\lambda_i \geq \lambda_2 \geq \cdots \geq \lambda_n$. Given this, a new point $x$ is projected as $z \in \mathbb{R}^k$, where
+
+\[
+    z_i = \sum_{j = 1}^n \alpha_j^{(i)}k(x_j, \, x).
+\]
+
+\textbf{Note:} Applying k-means or kernel-principal components is soemtimes called \textit{Kernel-k-means} or \textit{Spectral Clustering}.
+
+Some notes on Kernel-PCA:
+\begin{enumerate}
+    \item Kernel-PCA corresponds to applying PCA in the feature space induced by the kernel $k$
+    \item This can be used to discover non-linear feature maps in closed form
+    \item This can be used as inputs, e.g. to SVMs given "multi-layer support vector machines"
+    \item We may want to center the kernel, i.e. $K' = K - KE - EK + EKE$ where $E = \frac{1}{n}[1,..., \, 1][1,..., \, 1]^T$
+\end{enumerate}
+
 \subsection{Neural Network Autoencoders}
+
+The problem with Kernel-PCA is that it requires data specified as a kernel:
+\begin{itemize}
+    \item Complexity grows with the number of data points
+    \item Cannot easily "explicitly" embed high-dimensional data (unless we have an aapropriate kernel)
+\end{itemize}
+
+The key idea of \textbf{dimension reduction via Autoencoders} is to try and learn the idenity function $x \approx f(x; \, \theta)$. But what function $f$ should we pick?
+
+\[
+    f(x; \, \theta) = f_{dec}(f_{enc}(x; \, \theta_{enc}); \, \theta_{dec}),
+\]
+
+where $enc$ stands for "encoder" and $dec$ for "decoder". The idea is that the encoder maps the data to the lower-dimensional space and the decoder maps the data back to the original dimension:
+
+\begin{figure}[H]
+    \includegraphics[width=15cm]{../images/IntroML_Fig9-2}
+    \centering
+\end{figure}
+
+\textbf{Neural network Autoencoders} are ANNs where:
+\begin{itemize}
+    \item There is one output unit for each of the $d$ input units
+    \item The number $k$ of hidden units is usually smaller than the number of inputs (the \textit{bottleneck})
+\end{itemize}
+The goal is to optimize the weights such that the \textit{output agrees with the input,} in other words minimizing the squared reconstruction error:
+
+\[
+    \min_W \sum_{i = 1}^n ||x_i - f(x_i; \, W)||_2^2.
+\]
+
+As seen in previous chapters, we can find a local minimum via SGD (backpropagation). If we compare Autoencoders to PCA, we see that the internal representation $z = \varPhi(W^{(enc)}x)$ is the "dimensionality reduced" input $x$. If the activation function is the identity, then in fact fitting a NN autoencoder is equivalent to PCA!
+
+\subsection{Supervised vs. Unsupervised Learning}
+
+\begin{figure}[H]
+    \includegraphics[width=15cm]{../images/IntroML_Fig9-3}
+    \centering
+\end{figure}
+
+\begin{figure}[H]
+    \includegraphics[width=15cm]{../images/IntroML_Fig9-4}
+    \centering
+\end{figure}
 
 \end{document}
