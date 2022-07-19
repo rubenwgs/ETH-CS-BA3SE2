@@ -219,4 +219,135 @@ Ideally, we wish to find an estimator that simultaneously minimizes bias and var
 The maximum likelihood estimate for linear regression is unbiased (if $f^* \in F$). Furthermore, it is the maximum variance estimator among all unbiased estimators. However, we have already seen that the least-squares solution can overfit.
 Thus, we might trade a little bit of bias for a (potentially dramatic) reduction in variance.
 
+\subsection{Bayesian Modeling}
+
+We can introduce bias by expressing assumptions on parameters through a \textbf{Bayesian prior.} For example, let's assume weights are small, more likely around $0$. We can capture this assumption with a Gaussian prior $w \sim \mathcal{N}(0, \, \beta^2I), \, w_i \sim \mathcal{N}(0, \, \beta^2)$. Then, the \textit{posterior distribution} of $w$ is given using \textbf{Bayes' rule} by:
+
+\[
+    p(w \, | \, x_1,..., \, x_n, \, y_1,..., \, y_n) = \frac{p(w)p(y_1,..., \, y_n \, | \, x_1,..., \, x_n \, w)}{p(y_1,..., \, y_n \, | \, x_1,..., \, x_n)}
+\]
+
+Which parameters $w$ are most likely a posteriori? The solution to this question is given by the \textit{maximum a posteriori estimate:}
+
+\[
+    \hat{w} = \arg \max_w p(w \, | \, x_1,..., \, x_n, \, y_1,..., \, y_n) = \arg \min_w \frac{\sigma^2}{\beta^2}||w||_2^2 + \sum_{i = 1}^n (y_i - w^Tx_i)^2.
+\]
+
+This is equivalent to the ridge regression solution for $\lambda = \frac{\sigma^2}{\beta^2}$.
+
+\textbf{Ridge regression} can be understood as finding the \textit{Maximum A Posteriori (MAP) parameter estimate} for a linear regression problem, assuming that:
+\begin{enumerate}
+    \item The noise $p(y \, | \, x, \, w)$ is i.i.d. Gaussian
+    \item The prior $p(w)$ on the model parameters $w$ is Gaussian
+\end{enumerate}
+
+Then:
+\[
+    \arg \min_w \sum_{i = 1}^n (y_i - w^Tx_i)^2 + \lambda ||w||_2^2 \equiv \arg \max_w p(w) \prod_{i = 1}^n p(y_i \, | \, x_i, \, w)
+\]
+
+More generally, regularized estimation can often be understood as a MAP inference:
+
+\[
+    \arg \min_w \sum_{i = 1}^n l(w^Tx_i; \, x_i, \, y_i) + C(w) \equiv \arg \max_w p(w) \prod_{i = 1}^n p(y_i \, | \, x_i, \, w) = \arg \max_w p(w \, | \, D),
+\]
+
+where $C(w) = - \log p(w)$ and $l(w; \, x, \, y) = - \log p(y \, | \, x, \, w)$. This perspective allows changing priors (regularizers) and likelihoods (loss functions).
+
+\textbf{Example:} Is there a prior that corresponds to l1-regularization? Yes, the \textit{Laplace prior.}
+
+\begin{figure}[H]
+    \includegraphics[width=15cm]{../images/IntroML_Fig10-5}
+    \centering
+\end{figure}
+
+\[
+    p(x; \, \mu, \, b) = \frac{1}{2b} \exp \Big(- \frac{|x - \mu|}{b} \Big)
+\]
+
+\subsection{Statistical Models for Classification}
+
+In classification (with a 0-1-loss), the population risk is given by:
+
+\[
+    R(f) = P(y \neq f(x)) = \mathbb{E}_{x, \, y}[[y \neq f(x)]].
+\]
+
+Suppose we (unrealistically) knew $p(X, \, Y)$. Which $f$ minimizes the risk then? Assuming the data is generated i.i.d. according to $(x_i, \, y_i) \sim p(x, \, y)$, then, the hypothesis $f^*$ minimizing $R(f)$ is given by the \textit{most probable class}
+
+\[
+    f^*(x) = \arg \max_y p(Y = y \, | \, X = x).
+\]
+
+This (in practice unattainable) hypothesis is called the \textbf{Bayes' optimal predictor} for the 0-1-loss / misclassification error. Thus, the natural approach is again to estimate $p(y \, | \, x)$.
+
+\subsection{Logistic Regression}
+
+The main idea behind \textbf{logistic regression} is to use a generalized linear model for the class probability:
+
+\begin{figure}[H]
+    \includegraphics[width=6cm]{../images/IntroML_Fig10-6}
+    \centering
+\end{figure}
+
+The \textit{logsitc link function} for logistic regression is given by:
+
+\[
+    \sigma(w^Tx) = \frac{1}{1 + \exp(-w^Tx)}
+\]
+
+\begin{figure}[H]
+    \includegraphics[width=7cm]{../images/IntroML_Fig10-7}
+    \centering
+\end{figure}
+
+Logistic regression replaces the assumption of Gaussian noise by i.i.d. Bernoulli noise:
+
+\[
+    p(y \, | \, x, \, w) = \text{Ber}(y; \, \sigma(w^Tx))
+\]
+
+But how can we estimate the parameters $w$? Through maximum likelihood estimation or MAP estimation.
+
+The MLE for logistic regression is the negative log likelihood function given by:
+
+\[
+    L(w) = \sum_{i = 1}^n \log(1 + \exp(-y_iw^Tx_i))
+\]
+
+The logistic loss is \textit{convex.} Thus, we can use convex optimization techniques, such as SGD.
+
+Similar to SVMs and linear regression we want to use regularizers to control model complexity. Thus, instead of solving the MLE, we estimate MAP / solve the regularized problem:
+
+\begin{itemize}
+    \item L2 (Gaussian prior): $\sum_{i = 1}^n \log(1 + \exp(-y_iw^Tx_i)) + \lambda ||w||_2^2$
+    \item L1 (Laplace prior): $\sum_{i = 1}^n \log(1 + \exp(-y_iw^Tx_i)) + \lambda ||w||_1$
+\end{itemize}
+
+The same ideas also apply to \textbf{multi-class logistic regression.} We maintain one weight vector per class and model:
+
+\[
+    p(Y = i \, | \, x, \, w_1,..., \, w_c) = \frac{\exp(w^T_ix)}{\sum_{j = 1}^c \exp(w_j^Tx)}
+\]
+
+This is not unique, but we can force uniqueness by setting $w_c = 0$ (this recovers binary logistic regression as special case). The corresponding loss function (also called \textbf{cross-entropy loss}) is given by:
+
+\[
+    l(y, \, x; \, w_1,..., \, w_c) = - \log p(Y = y \, | \, x, \, w_1,..., \, w_c)
+\]
+
+\subsection{Summary}
+
+The summary for both supervised learning and unsupervised learning so far:
+
+\begin{figure}[H]
+    \includegraphics[width=15cm]{../images/IntroML_Fig10-8}
+    \centering
+\end{figure}
+
+\begin{figure}[H]
+    \includegraphics[width=15cm]{../images/IntroML_Fig10-9}
+    \centering
+\end{figure}
+
 \end{document}
