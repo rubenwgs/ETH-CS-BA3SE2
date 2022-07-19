@@ -3,7 +3,7 @@
 Here I'll upload all summaries I make during the semester. Summaries will be in the course language.
 
 ### Current Status
-- Introduction to Machine Learning: ![](https://us-central1-progress-markdown.cloudfunctions.net/progress/79)
+- Introduction to Machine Learning: ![](https://us-central1-progress-markdown.cloudfunctions.net/progress/82)
 - Wahrscheinlichkeit und Statistik: ![](https://us-central1-progress-markdown.cloudfunctions.net/progress/100)
 - Entrepreneurial Risks: ![](https://us-central1-progress-markdown.cloudfunctions.net/progress/100)
 
